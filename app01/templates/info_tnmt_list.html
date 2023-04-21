@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+<!DOCTYPE html>
+{% block content %}
+
+<h1>INFO列表</h1>
+
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>赛事名称</th>
+        <th>组别</th>
+        <th>主办姓名</th>
+        <th>主办方</th>
+        <th>省</th>
+        <th>市</th>
+        <th>开始日期</th>
+        <th>结束日期</th>
+        <th>外链</th>
+        <th>通过</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for obj in data_list %}
+        <tr>
+            <td>{{ obj.id }}</td>
+            <td>{{ obj.tnmtname }}</td>
+            <td>{{ obj.divi }}</td>
+            <td>{{ obj.host_name }}</td>
+            <td>{{ obj.host }}</td>
+            <td>{{ obj.prov }}</td>
+            <td>{{ obj.city }}</td>
+            <td>{{ obj.s_date }}</td>
+            <td>{{ obj.e_date }}</td>
+            <td>{{ obj.o_link }}</td>
+            <td>{{ obj.appro }}</td>
+            <td>
+                <a href="/tnmt/info/delete/?nid={{ obj.id }}">删除</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}
+

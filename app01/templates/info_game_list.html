@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+<!DOCTYPE html>
+{% block content %}
+
+<h1>INFO列表</h1>
+
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>sch_type</th>
+        <th>sch_id</th>
+        <th>sch_name</th>
+        <th>game_id</th>
+        <th>game_name</th>
+        <th>game_info</th>
+        <th>home</th>
+        <th>home_s</th>
+        <th>away_s</th>
+        <th>away</th>
+        <th>tnmt_name</th>
+        <th>date</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for obj in data_list %}
+        <tr>
+            <td>{{ obj.id }}"</td>
+            <td>{{ obj.sch_type}}</td>
+            <td>{{ obj.sch_id}}</td>
+            <td>{{ obj.sch_name}}</td>
+            <td>{{ obj.game_id}}</td>
+            <td>{{ obj.game_name}}</td>
+            <td>{{ obj.game_info}}</td>
+            <td>{{ obj.home}}</td>
+            <td>{{ obj.home_s}}</td>
+            <td>{{ obj.away_s}}</td>
+            <td>{{ obj.away}}</td>
+            <td>{{ obj.tnmt_name}}</td>
+            <td>{{ obj.date}}</td>
+            <td>
+                <a href="/game/info/delete/?nid={{ obj.id }}">删除</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}
+

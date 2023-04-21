@@ -1,0 +1,151 @@
+{% extends 'layout4.html' %}
+ 
+{% block content %}
+<style>
+    .wrapper {
+    padding: 15px 20px;
+  
+    display: flex;
+    align-items: flex-start;
+}
+.left {
+    width: 120px;
+    border: 5px solid #ddd;
+  
+    flex: 0 0 auto;
+}
+.right {
+    margin-left: 20px;
+    border: 5px solid #ddd;
+  
+    flex: 1 1 auto;
+}
+</style>
+
+<div class="container">
+    <div class="panel-heading">
+        <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+        {{queryset.0.sch_name}}
+    </div>
+    <div class="wrapper" id="wrapper">
+        <div class="container" class="left">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Pool A</th>
+                        <th>胜-负</th>
+                        <th>净胜分</th>
+                        <th>提交</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for obj in form_l2 %}
+                {% if obj.instance.pool_id == 1 %}
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <tr>
+                        <td>{{obj.team}}</td>
+                        <td>{{obj.result}}</td>
+                        <td>{{obj.score_d}}</td>
+                        <td><button type="submit" class="btn btn-primary" name="p{{obj.instance.pool_id}}_{{obj.instance.team_id}}">提 交</button></td>
+                        <span style="color: red;">{{ obj.errors.0 }}</span>
+                    </tr>
+                </form>
+                {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="container" class="right">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Pool B</th>
+                        <th>胜-负</th>
+                        <th>净胜分</th>
+                        <th>提交</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for obj in form_l2 %}
+                {% if obj.instance.pool_id == 2 %}
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <tr>
+                        <td>{{obj.team}}</td>
+                        <td>{{obj.result}}</td>
+                        <td>{{obj.score_d}}</td>
+                        <td><button type="submit" class="btn btn-primary" name="p{{obj.instance.pool_id}}_{{obj.instance.team_id}}">提 交</button></td>
+                        <span style="color: red;">{{ obj.errors.0 }}</span>
+                    </tr>
+                </form>
+                {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Pool C</th>
+                <th>胜-负</th>
+                <th>净胜分</th>
+                <th>提交</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for obj in form_l2 %}
+        {% if obj.instance.pool_id == 3 %}
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <tr>
+                <td>{{obj.team}}</td>
+                <td>{{obj.result}}</td>
+                <td>{{obj.score_d}}</td>
+                <td><button type="submit" class="btn btn-primary" name="p{{obj.instance.pool_id}}_{{obj.instance.team_id}}">提 交</button></td>
+                <span style="color: red;">{{ obj.errors.0 }}</span>
+            </tr>
+        </form>
+        {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>比赛编号</th>
+                <th>时间&场地</th>
+                <th>主队</th>
+                <th>主分</th>
+                <th>客分</th>
+                <th>客队</th>
+                <th>提交</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for obj in form_l %}
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <tr>
+                <td>{{ obj.game_name}}</td>
+                <td>{{ obj.game_info}}</td>
+                <td>{{ obj.home}}</td>
+                <td>{{ obj.home_s}}</td>
+                <td>{{ obj.away_s}}</td>
+                <td>{{ obj.away}}</td>
+                <td><button type="submit" class="btn btn-primary" name="g{{obj.instance.game_id}}">提 交</button></td>
+            </tr>
+        </form>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<br>
+<div>
+    <li><a href="/game/{{nid}}/{{mid}}/delete/">删除页面</a></li>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                赛事列表
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>赛事/Tournament</th>
+                    <th>组别/Division</th>
+                    <th>主办方/Host</th>
+                    <th>省/Province</th>
+                    <th>城市/City</th>
+                    <th>日期/Date</th>
+                    <th>通过/Accepted</th>
+                    <th>赛程</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset %}
+                    <tr>
+                        <td>{{ obj.id}}</td>
+                        <td>{{ obj.tnmtname}}</td>
+                        <td>{{ obj.divi}}</td>
+                        <td>{{ obj.host }}</td>
+                        <td>{{ obj.prov }}</td>
+                        <td>{{ obj.city }}</td>
+                        <td>{{ obj.s_date }}</td>
+                        <td>{{ obj.appro }}</td>
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="/tnmt/{{ obj.id }}/edit/">赛程编辑</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="/tnmt/{{ obj.id }}/link_edit/">外链编辑</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

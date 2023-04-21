@@ -1,0 +1,3460 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <title>中国极限飞盘信息平台</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.min.css' %}">
+    <style>
+        .navbar {
+            border-radius: 0;
+        }
+    </style>
+    <style>
+    * {margin: 0; padding: 0;}
+
+    .tree ul { padding-top: 20px; position: relative; transition: all 0.5s; -webkit-transition: all 0.5s; -moz-transition: all 0.5s; }
+
+    .tree li { float: left; text-align: center; list-style-type: none; position: relative; padding: 20px 3px 0 3px; transition: all 0.5s; -webkit-transition: all 0.5s; -moz-transition: all 0.5s; }
+
+    /*We will use ::before and ::after to draw the connectors*/
+
+    .tree li::before, .tree li::after{ content: ''; position: absolute; top: 0; right: 50%; border-top: 1px solid #ccc; width: 50%; height: 20px; }
+    .tree li::after{ right: auto; left: 50%; border-left: 1px solid #ccc; }
+
+    /*We need to remove left-right connectors from elements without any siblings*/
+    .tree li:only-child::after, .tree li:only-child::before { display: none; }
+
+    /*Remove space from the top of single children*/
+    .tree li:only-child{ padding-top: 0;}
+
+    /*Remove left connector from first child and right connector from last child*/
+    .tree li:first-child::before, .tree li:last-child::after{ border: 0 none; }
+    /*Adding back the vertical connector to the last nodes*/
+    .tree li:last-child::before{ border-right: 1px solid #ccc; border-radius: 0 3px 0 0; -webkit-border-radius: 0 3px 0 0; -moz-border-radius: 0 3px 0 0; }
+    .tree li:first-child::after{ border-radius: 3px 0 0 0; -webkit-border-radius: 3px 0 0 0; -moz-border-radius: 3px 0 0 0; }
+
+    /*Time to add downward connectors from parents*/
+    .tree ul ul::before{ content: ''; position: absolute; top: 0; left: 50%; border-left: 1px solid #ccc; width: 0; height: 20px; }
+
+    .tree li a{ border: 1px solid #ccc; padding: 3px 10px; text-decoration: none; color: #666; font-family: arial, verdana, tahoma; font-size: 11px; display: inline-block; border-radius: 3px; -webkit-border-radius: 3px; -moz-border-radius: 3px; transition: all 0.5s; -webkit-transition: all 0.5s; -moz-transition: all 0.5s; }
+
+    /*Time for some hover effects*/
+    /*We will apply the hover effect the the lineage of the element also*/
+    .tree li a:hover, .tree li a:hover+ul li a { background: #c8e4f8; color: #000; border: 1px solid #94a0b4; }
+    /*Connector styles on hover*/
+    .tree li a:hover+ul li::after,
+    .tree li a:hover+ul li::before,
+    .tree li a:hover+ul::before,
+    .tree li a:hover+ul ul::before{ border-color: #94a0b4; }
+</style>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"> 中国极限飞盘信息平台 </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="/tnmt/list/">赛事列表</a></li>
+                <li><a href="/team/list/">队伍列表</a></li>
+                <li><a href="http://www.pandonut.com/map">飞盘地图</a></li>
+                <li><a href="/page/hist/">历史数据库</a></li>
+                <li><a href="/page/p_r/">Power Ranking</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/user/add/">注册</a></li>
+                <li><a href="/login/">登录</a></li>
+                
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">{{ request.session.info.name }} <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/logout/">退出登录</a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div>
+    {% block content %}{% endblock %}
+</div>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
+</body>
+
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <meta name="generator" content="PhpSpreadsheet, https://github.com/PHPOffice/PhpSpreadsheet">
+      <meta name="author" content="晏浩洋" />
+      <meta name="company" content="Microsoft Corporation" />
+    <style type="text/css">
+      html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:11pt; background-color:white }
+      a.comment-indicator:hover + div.comment { background:#ffd; position:absolute; display:block; border:1px solid black; padding:0.5em }
+      a.comment-indicator { background:red; display:inline-block; border:1px solid black; width:0.5em; height:0.5em }
+      div.comment { display:none }
+      table { border-collapse:collapse; page-break-after:always }
+      .gridlines td { border:1px dotted black }
+      .gridlines th { border:1px dotted black }
+      .b { text-align:center }
+      .e { text-align:center }
+      .f { text-align:right }
+      .inlineStr { text-align:left }
+      .n { text-align:right }
+      .s { text-align:left }
+      td.style0 { vertical-align:middle; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style0 { vertical-align:middle; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'等线'; font-size:11pt; background-color:white }
+      td.style1 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#000000; font-family:'等线'; font-size:14pt; background-color:white }
+      th.style1 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#000000; font-family:'等线'; font-size:14pt; background-color:white }
+      td.style2 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#000000; font-family:'等线'; font-size:14pt; background-color:white }
+      th.style2 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#000000; font-family:'等线'; font-size:14pt; background-color:white }
+      td.style3 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#223962; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style3 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#223962; font-family:'等线'; font-size:11pt; background-color:white }
+      td.style4 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#223962; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style4 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#223962; font-family:'等线'; font-size:11pt; background-color:white }
+      td.style5 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#223962; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style5 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#223962; font-family:'等线'; font-size:11pt; background-color:white }
+      td.style6 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#223962; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style6 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#223962; font-family:'等线'; font-size:11pt; background-color:white }
+      td.style7 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#C00000; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style7 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#C00000; font-family:'等线'; font-size:11pt; background-color:white }
+      td.style8 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#C00000; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style8 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#C00000; font-family:'等线'; font-size:11pt; background-color:white }
+      td.style9 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#C00000; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style9 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#C00000; font-family:'等线'; font-size:11pt; background-color:white }
+      td.style10 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#C00000; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style10 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#C00000; font-family:'等线'; font-size:11pt; background-color:white }
+      td.style11 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#223962; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style11 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#223962; font-family:'等线'; font-size:11pt; background-color:white }
+      td.style12 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#000000; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style12 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#000000; font-family:'等线'; font-size:11pt; background-color:white }
+      td.style13 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#000000; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style13 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#000000; font-family:'等线'; font-size:11pt; background-color:white }
+      td.style14 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#000000; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style14 { vertical-align:middle; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#000000; font-family:'等线'; font-size:11pt; background-color:white }
+      td.style15 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#000000; font-family:'等线'; font-size:11pt; background-color:white }
+      th.style15 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; font-weight:bold; color:#000000; font-family:'等线'; font-size:11pt; background-color:white }
+      table.sheet0 col.col0 { width:87.43333233pt }
+      table.sheet0 col.col1 { width:41.34444397pt }
+      table.sheet0 col.col2 { width:41.34444397pt }
+      table.sheet0 col.col3 { width:50.15555498pt }
+      table.sheet0 col.col4 { width:41.34444397pt }
+      table.sheet0 col.col5 { width:69.81111031pt }
+      table.sheet0 col.col6 { width:41.34444397pt }
+      table.sheet0 col.col7 { width:73.87777693pt }
+      table.sheet0 col.col8 { width:73.87777693pt }
+      table.sheet0 col.col9 { width:73.87777693pt }
+      table.sheet0 col.col10 { width:41.34444397pt }
+      table.sheet0 col.col11 { width:41.34444397pt }
+      table.sheet0 tr { height:15pt }
+      table.sheet0 tr.row0 { height:17.5pt }
+      table.sheet0 tr.row1 { height:15pt }
+      table.sheet0 tr.row2 { height:15pt }
+      table.sheet0 tr.row3 { height:15pt }
+      table.sheet0 tr.row4 { height:15pt }
+      table.sheet0 tr.row5 { height:15pt }
+      table.sheet0 tr.row6 { height:15pt }
+      table.sheet0 tr.row7 { height:15pt }
+      table.sheet0 tr.row8 { height:15pt }
+      table.sheet0 tr.row9 { height:15pt }
+      table.sheet0 tr.row10 { height:15pt }
+      table.sheet0 tr.row11 { height:15pt }
+      table.sheet0 tr.row12 { height:15pt }
+      table.sheet0 tr.row13 { height:15pt }
+      table.sheet0 tr.row14 { height:15pt }
+      table.sheet0 tr.row15 { height:15pt }
+      table.sheet0 tr.row16 { height:15pt }
+      table.sheet0 tr.row17 { height:15pt }
+      table.sheet0 tr.row18 { height:15pt }
+      table.sheet0 tr.row19 { height:15pt }
+      table.sheet0 tr.row20 { height:15pt }
+      table.sheet0 tr.row21 { height:15pt }
+      table.sheet0 tr.row22 { height:15pt }
+      table.sheet0 tr.row23 { height:15pt }
+      table.sheet0 tr.row24 { height:15pt }
+      table.sheet0 tr.row25 { height:15pt }
+      table.sheet0 tr.row26 { height:15pt }
+      table.sheet0 tr.row27 { height:15pt }
+      table.sheet0 tr.row28 { height:15pt }
+      table.sheet0 tr.row29 { height:15pt }
+      table.sheet0 tr.row30 { height:15pt }
+      table.sheet0 tr.row31 { height:15pt }
+      table.sheet0 tr.row32 { height:15pt }
+      table.sheet0 tr.row33 { height:15pt }
+      table.sheet0 tr.row34 { height:15pt }
+      table.sheet0 tr.row35 { height:15pt }
+      table.sheet0 tr.row36 { height:15pt }
+      table.sheet0 tr.row37 { height:15pt }
+      table.sheet0 tr.row38 { height:15pt }
+      table.sheet0 tr.row39 { height:15pt }
+      table.sheet0 tr.row40 { height:15pt }
+      table.sheet0 tr.row41 { height:15pt }
+      table.sheet0 tr.row42 { height:15pt }
+      table.sheet0 tr.row43 { height:15pt }
+      table.sheet0 tr.row44 { height:15pt }
+      table.sheet0 tr.row45 { height:15pt }
+      table.sheet0 tr.row46 { height:15pt }
+      table.sheet0 tr.row47 { height:15pt }
+      table.sheet0 tr.row48 { height:15pt }
+      table.sheet0 tr.row49 { height:15pt }
+      table.sheet0 tr.row50 { height:15pt }
+      table.sheet0 tr.row51 { height:15pt }
+      table.sheet0 tr.row52 { height:15pt }
+      table.sheet0 tr.row53 { height:15pt }
+      table.sheet0 tr.row54 { height:15pt }
+      table.sheet0 tr.row55 { height:15pt }
+      table.sheet0 tr.row56 { height:15pt }
+      table.sheet0 tr.row57 { height:15pt }
+      table.sheet0 tr.row58 { height:15pt }
+      table.sheet0 tr.row59 { height:15pt }
+      table.sheet0 tr.row60 { height:15pt }
+      table.sheet0 tr.row61 { height:15pt }
+      table.sheet0 tr.row62 { height:15pt }
+      table.sheet0 tr.row63 { height:15pt }
+      table.sheet0 tr.row64 { height:15pt }
+      table.sheet0 tr.row65 { height:15pt }
+      table.sheet0 tr.row66 { height:15pt }
+      table.sheet0 tr.row67 { height:15pt }
+      table.sheet0 tr.row68 { height:15pt }
+      table.sheet0 tr.row69 { height:15pt }
+      table.sheet0 tr.row70 { height:15pt }
+      table.sheet0 tr.row71 { height:15pt }
+      table.sheet0 tr.row72 { height:15pt }
+      table.sheet0 tr.row73 { height:15pt }
+      table.sheet0 tr.row74 { height:15pt }
+      table.sheet0 tr.row75 { height:15pt }
+      table.sheet0 tr.row76 { height:15pt }
+      table.sheet0 tr.row77 { height:15pt }
+      table.sheet0 tr.row78 { height:15pt }
+      table.sheet0 tr.row79 { height:15pt }
+      table.sheet0 tr.row80 { height:15pt }
+      table.sheet0 tr.row81 { height:15pt }
+      table.sheet0 tr.row82 { height:15pt }
+      table.sheet0 tr.row83 { height:15pt }
+      table.sheet0 tr.row84 { height:15pt }
+      table.sheet0 tr.row85 { height:15pt }
+      table.sheet0 tr.row86 { height:15pt }
+      table.sheet0 tr.row87 { height:15pt }
+      table.sheet0 tr.row88 { height:15pt }
+      table.sheet0 tr.row89 { height:15pt }
+      table.sheet0 tr.row90 { height:15pt }
+      table.sheet0 tr.row91 { height:15pt }
+      table.sheet0 tr.row92 { height:15pt }
+      table.sheet0 tr.row93 { height:15pt }
+      table.sheet0 tr.row94 { height:15pt }
+      table.sheet0 tr.row95 { height:15pt }
+      table.sheet0 tr.row96 { height:15pt }
+      table.sheet0 tr.row97 { height:15pt }
+      table.sheet0 tr.row98 { height:15pt }
+      table.sheet0 tr.row99 { height:15pt }
+      table.sheet0 tr.row100 { height:15pt }
+      table.sheet0 tr.row101 { height:15pt }
+      table.sheet0 tr.row102 { height:15pt }
+      table.sheet0 tr.row103 { height:15pt }
+      table.sheet0 tr.row104 { height:15pt }
+      table.sheet0 tr.row105 { height:15pt }
+      table.sheet0 tr.row106 { height:15pt }
+      table.sheet0 tr.row107 { height:15pt }
+      table.sheet0 tr.row108 { height:15pt }
+      table.sheet0 tr.row109 { height:15pt }
+      table.sheet0 tr.row110 { height:15pt }
+      table.sheet0 tr.row111 { height:15pt }
+      table.sheet0 tr.row112 { height:15pt }
+      table.sheet0 tr.row113 { height:15pt }
+      table.sheet0 tr.row114 { height:15pt }
+      table.sheet0 tr.row115 { height:15pt }
+      table.sheet0 tr.row116 { height:15pt }
+      table.sheet0 tr.row117 { height:15pt }
+      table.sheet0 tr.row118 { height:15pt }
+      table.sheet0 tr.row119 { height:15pt }
+      table.sheet0 tr.row120 { height:15pt }
+      table.sheet0 tr.row121 { height:15pt }
+      table.sheet0 tr.row122 { height:15pt }
+      table.sheet0 tr.row123 { height:15pt }
+      table.sheet0 tr.row124 { height:15pt }
+      table.sheet0 tr.row125 { height:15pt }
+      table.sheet0 tr.row126 { height:15pt }
+      table.sheet0 tr.row127 { height:15pt }
+      table.sheet0 tr.row128 { height:15pt }
+      table.sheet0 tr.row129 { height:15pt }
+      table.sheet0 tr.row130 { height:15pt }
+      table.sheet0 tr.row131 { height:15pt }
+      table.sheet0 tr.row132 { height:15pt }
+      table.sheet0 tr.row133 { height:15pt }
+      table.sheet0 tr.row134 { height:15pt }
+      table.sheet0 tr.row135 { height:15pt }
+      table.sheet0 tr.row136 { height:15pt }
+      table.sheet0 tr.row137 { height:15pt }
+      table.sheet0 tr.row138 { height:15pt }
+      table.sheet0 tr.row139 { height:15pt }
+      table.sheet0 tr.row140 { height:15pt }
+      table.sheet0 tr.row141 { height:15pt }
+      table.sheet0 tr.row142 { height:15pt }
+      table.sheet0 tr.row143 { height:15pt }
+      table.sheet0 tr.row144 { height:15pt }
+      table.sheet0 tr.row145 { height:15pt }
+      table.sheet0 tr.row146 { height:15pt }
+      table.sheet0 tr.row147 { height:15pt }
+      table.sheet0 tr.row148 { height:15pt }
+      table.sheet0 tr.row149 { height:15pt }
+      table.sheet0 tr.row150 { height:15pt }
+      table.sheet0 tr.row151 { height:15pt }
+      table.sheet0 tr.row152 { height:15pt }
+      table.sheet0 tr.row153 { height:15pt }
+      table.sheet0 tr.row154 { height:15pt }
+      table.sheet0 tr.row155 { height:15pt }
+      table.sheet0 tr.row156 { height:15pt }
+      table.sheet0 tr.row157 { height:15pt }
+      table.sheet0 tr.row158 { height:15pt }
+      table.sheet0 tr.row159 { height:15pt }
+      table.sheet0 tr.row160 { height:15pt }
+      table.sheet0 tr.row161 { height:15pt }
+      table.sheet0 tr.row162 { height:15pt }
+      table.sheet0 tr.row163 { height:15pt }
+      table.sheet0 tr.row164 { height:15pt }
+      table.sheet0 tr.row165 { height:15pt }
+      table.sheet0 tr.row166 { height:15pt }
+      table.sheet0 tr.row167 { height:15pt }
+      table.sheet0 tr.row168 { height:15pt }
+      table.sheet0 tr.row169 { height:15pt }
+      table.sheet0 tr.row170 { height:15pt }
+      table.sheet0 tr.row171 { height:15pt }
+      table.sheet0 tr.row172 { height:15pt }
+      table.sheet0 tr.row173 { height:15pt }
+      table.sheet0 tr.row174 { height:15pt }
+      table.sheet0 tr.row175 { height:15pt }
+      table.sheet0 tr.row176 { height:15pt }
+      table.sheet0 tr.row177 { height:15pt }
+      table.sheet0 tr.row178 { height:15pt }
+      table.sheet0 tr.row179 { height:15pt }
+      table.sheet0 tr.row180 { height:15pt }
+      table.sheet0 tr.row181 { height:15pt }
+      table.sheet0 tr.row182 { height:15pt }
+      table.sheet0 tr.row183 { height:15pt }
+      table.sheet0 tr.row184 { height:15pt }
+      table.sheet0 tr.row185 { height:15pt }
+      table.sheet0 tr.row186 { height:15pt }
+      table.sheet0 tr.row187 { height:15pt }
+      table.sheet0 tr.row188 { height:15pt }
+      table.sheet0 tr.row189 { height:15pt }
+      table.sheet0 tr.row190 { height:15pt }
+      table.sheet0 tr.row191 { height:15pt }
+      table.sheet0 tr.row192 { height:15pt }
+      table.sheet0 tr.row193 { height:15pt }
+      table.sheet0 tr.row194 { height:15pt }
+      table.sheet0 tr.row195 { height:15pt }
+      table.sheet0 tr.row196 { height:15pt }
+      table.sheet0 tr.row197 { height:15pt }
+      table.sheet0 tr.row198 { height:15pt }
+      table.sheet0 tr.row199 { height:15pt }
+      table.sheet0 tr.row200 { height:15pt }
+      table.sheet0 tr.row201 { height:15pt }
+      table.sheet0 tr.row202 { height:15pt }
+      table.sheet0 tr.row203 { height:15pt }
+      table.sheet0 tr.row204 { height:15pt }
+      table.sheet0 tr.row205 { height:15pt }
+      table.sheet0 tr.row206 { height:15pt }
+      table.sheet0 tr.row207 { height:15pt }
+      table.sheet0 tr.row208 { height:15pt }
+      table.sheet0 tr.row209 { height:15pt }
+      table.sheet0 tr.row210 { height:15pt }
+      table.sheet0 tr.row211 { height:15pt }
+      table.sheet0 tr.row212 { height:15pt }
+      table.sheet0 tr.row213 { height:15pt }
+      table.sheet0 tr.row214 { height:15pt }
+      table.sheet0 tr.row215 { height:15pt }
+      table.sheet0 tr.row216 { height:15pt }
+      table.sheet0 tr.row217 { height:15pt }
+    </style>
+  </head>
+
+  <body>
+<style>
+@page { margin-left: 0.7in; margin-right: 0.7in; margin-top: 0.75in; margin-bottom: 0.75in; }
+body { margin-left: 0.7in; margin-right: 0.7in; margin-top: 0.75in; margin-bottom: 0.75in; }
+</style>
+    <table border="0" cellpadding="0" cellspacing="0" id="sheet0" class="sheet0 gridlines">
+        <col class="col0">
+        <col class="col1">
+        <col class="col2">
+        <col class="col3">
+        <col class="col4">
+        <col class="col5">
+        <col class="col6">
+        <col class="col7">
+        <col class="col8">
+        <col class="col9">
+        <col class="col10">
+        <col class="col11">
+        <tbody>
+          <tr class="row0">
+            <td class="column0 style1 s">比赛</td>
+            <td class="column1 style2 s">年</td>
+            <td class="column2 style2 s">月</td>
+            <td class="column3 style1 s">组别</td>
+            <td class="column4 style1 s">城市</td>
+            <td class="column5 style1 s">主办方</td>
+            <td class="column6 style2 s">队伍数</td>
+            <td class="column7 style1 s">冠军</td>
+            <td class="column8 style1 s">亚军</td>
+            <td class="column9 style1 s">季军</td>
+            <td class="column10 style2 s">高水平</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row1">
+            <td class="column0 style3 s">玉堂杯</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">12</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">东莞</td>
+            <td class="column5 style5 s">盘峰飞盘</td>
+            <td class="column6 style4 n">16</td>
+            <td class="column7 style3 null"></td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row2">
+            <td class="column0 style3 s">三圈融合</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">12</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">深圳</td>
+            <td class="column5 style5 s">乐奥飞盘</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">盘牛</td>
+            <td class="column8 style5 s">Chunkdog</td>
+            <td class="column9 style5 s">深圳乐奥</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row3">
+            <td class="column0 style3 s">上海业余联赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">12</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">练市集</td>
+            <td class="column6 style4 n">10</td>
+            <td class="column7 style3 s">s</td>
+            <td class="column8 style5 s">超光速Finchi</td>
+            <td class="column9 style5 s">琦逸小伙伴</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row4">
+            <td class="column0 style3 s">广西公开赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">南宁</td>
+            <td class="column5 style5 s">感知视界</td>
+            <td class="column6 style4 n">24</td>
+            <td class="column7 style3 s">RMB</td>
+            <td class="column8 style5 s">禁飞区 山水名城</td>
+            <td class="column9 style5 s">优范NALO麒麟</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row5">
+            <td class="column0 style3 s">海南公开赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">海口</td>
+            <td class="column5 style5 s">海南界磐</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">海口北极熊</td>
+            <td class="column8 style5 s">海南界磐</td>
+            <td class="column9 style5 s">南鸽</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row6">
+            <td class="column0 style3 s">常州城市邀请赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">常州</td>
+            <td class="column5 style5 s">常州赤乌</td>
+            <td class="column6 style4 n">5</td>
+            <td class="column7 style3 s">南京枪花</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row7">
+            <td class="column0 style3 s">战马杯</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">长沙</td>
+            <td class="column5 style5 s">雏远体育</td>
+            <td class="column6 style4 n">12</td>
+            <td class="column7 style3 s">中南CSU</td>
+            <td class="column8 style5 s">湖大Huda</td>
+            <td class="column9 style5 s">湖南农大枭龙</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row8">
+            <td class="column0 style3 s">青岛杯</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">青岛</td>
+            <td class="column5 style5 s">心同步体育</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">深不见底</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row9">
+            <td class="column0 style7 s">大中华锦标赛</td>
+            <td class="column1 style8 n">2022</td>
+            <td class="column2 style8 n">11</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">超光速</td>
+            <td class="column6 style8 n">8</td>
+            <td class="column7 style7 s">上海Huwa</td>
+            <td class="column8 style9 s">深圳Zen</td>
+            <td class="column9 style9 s">成都Feipanda</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row10">
+            <td class="column0 style3 s">中国飞盘联赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">杭州</td>
+            <td class="column5 style5 s">飞盘推广委员会</td>
+            <td class="column6 style4 n">16</td>
+            <td class="column7 style3 s">宁波甬士</td>
+            <td class="column8 style5 s">杭州龙井虾仁</td>
+            <td class="column9 style5 s">杭州好天气</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row11">
+            <td class="column0 style3 s">长沙交流赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">长沙</td>
+            <td class="column5 style5 s">长沙体育产业</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">中南CSU</td>
+            <td class="column8 style5 s">湖大Huda</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row12">
+            <td class="column0 style3 s">成都公园城市杯</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">成都</td>
+            <td class="column5 style5 s">成都体育局</td>
+            <td class="column6 style4 n">11</td>
+            <td class="column7 style3 s">成大Forange</td>
+            <td class="column8 style5 s">成都Feipanda</td>
+            <td class="column9 style5 s">成大Orange</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row13">
+            <td class="column0 style3 s">南京交流赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">南京</td>
+            <td class="column5 style5 s">南京枪花</td>
+            <td class="column6 style4 n">4</td>
+            <td class="column7 style3 s">南京枪花</td>
+            <td class="column8 style5 s">上海Buwa</td>
+            <td class="column9 style5 s">南师盘瘾</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row14">
+            <td class="column0 style7 s">UCCS大湾区</td>
+            <td class="column1 style8 n">2022</td>
+            <td class="column2 style8 n">10</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">珠海</td>
+            <td class="column5 style9 s">华发体育</td>
+            <td class="column6 style8 n">6</td>
+            <td class="column7 style7 s">深圳Zen</td>
+            <td class="column8 style9 s">广州银河暴风兵团</td>
+            <td class="column9 style9 s">东莞黑虎帮</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row15">
+            <td class="column0 style3 s">比划比划</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">成都</td>
+            <td class="column5 style5 s">锦江区飞盘</td>
+            <td class="column6 style4 n">20</td>
+            <td class="column7 style3 s">礼拜武黑桃</td>
+            <td class="column8 style5 s">C+</td>
+            <td class="column9 style5 s">黑洞</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row16">
+            <td class="column0 style3 s">UIC邀请赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">珠海</td>
+            <td class="column5 style5 s">UIC</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">Hurricane</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row17">
+            <td class="column0 style3 s">白象象邀请赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">上海之翼</td>
+            <td class="column6 style4 n">16</td>
+            <td class="column7 style3 s">上海多飞</td>
+            <td class="column8 style5 s">上海超光速Raven</td>
+            <td class="column9 style5 s">上海平和</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row18">
+            <td class="column0 style3 s">福建女子邀请赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">女子</td>
+            <td class="column4 style5 s">福州</td>
+            <td class="column5 style5 s">英达沃体育</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">Blus'Om</td>
+            <td class="column8 style5 s">福州红蚂蚁</td>
+            <td class="column9 style5 s">FATATA</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row19">
+            <td class="column0 style3 s">南京邀请赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">9</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">南京</td>
+            <td class="column5 style5 s">南京枪花</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">南京枪花</td>
+            <td class="column8 style5 s">常州滑翔翼</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row20">
+            <td class="column0 style3 s">多飞四季赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">9</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">多飞飞盘</td>
+            <td class="column6 style4 n">16</td>
+            <td class="column7 style3 s">上海黑猫</td>
+            <td class="column8 style5 s">上海Lumos</td>
+            <td class="column9 style5 s">上海超光速Raven</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row21">
+            <td class="column0 style3 s">湾区之星赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">9</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">深圳</td>
+            <td class="column5 style5 s">体邦体育</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">深圳嘉伟</td>
+            <td class="column8 style5 s">深圳先行者</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row22">
+            <td class="column0 style3 s">温州公开赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">9</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">温州</td>
+            <td class="column5 style5 s">温州飞盘</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">福州十三水</td>
+            <td class="column8 style5 s">饺子</td>
+            <td class="column9 style5 s">小野兽</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row23">
+            <td class="column0 style3 s">CUDL季前赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">8</td>
+            <td class="column3 style5 s">联赛 混合</td>
+            <td class="column4 style5 s">北京</td>
+            <td class="column5 style5 s">快步云</td>
+            <td class="column6 style4 n">10</td>
+            <td class="column7 style3 s">北京大哥</td>
+            <td class="column8 style5 s">Dfly</td>
+            <td class="column9 style5 s">迈克虎</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row24">
+            <td class="column0 style3 s">北京公开赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">8</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">北京</td>
+            <td class="column5 style5 s">盛辉体育</td>
+            <td class="column6 style4 n">16</td>
+            <td class="column7 style3 s">YJ ACE</td>
+            <td class="column8 style5 s">清飞Raven</td>
+            <td class="column9 style5 s">Hang Time</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row25">
+            <td class="column0 style3 s">北京公开赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">8</td>
+            <td class="column3 style5 s">公开</td>
+            <td class="column4 style5 s">北京</td>
+            <td class="column5 style5 s">盛辉体育</td>
+            <td class="column6 style4 n">21</td>
+            <td class="column7 style11 n">88</td>
+            <td class="column8 style5 s">小短传</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row26">
+            <td class="column0 style3 s">北京公开赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">8</td>
+            <td class="column3 style5 s">女子</td>
+            <td class="column4 style5 s">北京</td>
+            <td class="column5 style5 s">盛辉体育</td>
+            <td class="column6 style4 n">22</td>
+            <td class="column7 style3 s">UN</td>
+            <td class="column8 style5 s">YJ ACE</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row27">
+            <td class="column0 style3 s">北京公开赛大众组</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">8</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">北京</td>
+            <td class="column5 style5 s">盛辉体育</td>
+            <td class="column6 style4 n">40</td>
+            <td class="column7 style3 s">CT</td>
+            <td class="column8 style5 s">Go Sky</td>
+            <td class="column9 style5 s">鹏瑞</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row28">
+            <td class="column0 style3 s">嘉定盛夏赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">8</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">三千</td>
+            <td class="column6 style4 n">12</td>
+            <td class="column7 style3 null"></td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row29">
+            <td class="column0 style3 s">中国飞盘联赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">8</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">西安</td>
+            <td class="column5 style5 s">飞盘推广委员会</td>
+            <td class="column6 style4 n">12</td>
+            <td class="column7 style3 s">西体V7</td>
+            <td class="column8 style5 s">西安肉夹馍</td>
+            <td class="column9 style5 s">西安YUF</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row30">
+            <td class="column0 style3 s">天体悦跑杯</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">8</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">广州</td>
+            <td class="column5 style5 s">视界飞盘</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">广州视界</td>
+            <td class="column8 style5 s">佛山火鸡</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row31">
+            <td class="column0 style3 s">广州奥体杯</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">8</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">广州</td>
+            <td class="column5 style5 s">视界飞盘</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">广州wefly</td>
+            <td class="column8 style5 s">广州荔枝</td>
+            <td class="column9 style5 s">广州视界</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row32">
+            <td class="column0 style3 s">济南公开赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">8</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">济南</td>
+            <td class="column5 style5 s">济南极限飞盘</td>
+            <td class="column6 style4 n">10</td>
+            <td class="column7 style3 null"></td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row33">
+            <td class="column0 style7 s">岭南公开赛</td>
+            <td class="column1 style8 n">2022</td>
+            <td class="column2 style8 n">7</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">广州</td>
+            <td class="column5 style9 s">荔枝飞盘</td>
+            <td class="column6 style8 n">24</td>
+            <td class="column7 style7 s">深圳Zen</td>
+            <td class="column8 style9 s">广州Storm</td>
+            <td class="column9 style9 s">上海Huwa</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row34">
+            <td class="column0 style3 s">天津公开赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">7</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">天津速必得</td>
+            <td class="column6 style4 n">7</td>
+            <td class="column7 style3 s">天体Speed</td>
+            <td class="column8 style5 s">双色球</td>
+            <td class="column9 style5 s">Daybreak</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row35">
+            <td class="column0 style3 s">女子飞盘系列赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">7</td>
+            <td class="column3 style5 s">女子</td>
+            <td class="column4 style5 s">杭州</td>
+            <td class="column5 style5 s">飞盘文化</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">上海Lumos</td>
+            <td class="column8 style5 s">杭州ASTA</td>
+            <td class="column9 style5 s">皮卡</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row36">
+            <td class="column0 style3 s">山东公开赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">5</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">济南</td>
+            <td class="column5 style5 s">山东飞盘</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">山东体育学院</td>
+            <td class="column8 style5 s">山东体育学院</td>
+            <td class="column9 style5 s">齐鲁师范大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row37">
+            <td class="column0 style3 s">成都迷你公开赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">5</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">成都</td>
+            <td class="column5 style5 s">成都飞盘大</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">成都Feipanda</td>
+            <td class="column8 style5 s">成大Forange</td>
+            <td class="column9 style5 s">成都辣骄</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row38">
+            <td class="column0 style3 s">XCS联赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">2</td>
+            <td class="column3 style5 s">联赛 混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">SUPA</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">上海Hairens</td>
+            <td class="column8 style5 s">上海Lumos</td>
+            <td class="column9 style5 s">上海黑猫</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row39">
+            <td class="column0 style3 s">三千邀请赛</td>
+            <td class="column1 style4 n">2022</td>
+            <td class="column2 style4 n">1</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">三千</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">Twins</td>
+            <td class="column8 style5 s">同济TJUF</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row40">
+            <td class="column0 style7 s">深圳佳兆业杯</td>
+            <td class="column1 style8 n">2021</td>
+            <td class="column2 style8 n">12</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">深圳</td>
+            <td class="column5 style9 s">佳兆业</td>
+            <td class="column6 style8 n">14</td>
+            <td class="column7 style7 s">深圳Zen</td>
+            <td class="column8 style9 s">广州Storm</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row41">
+            <td class="column0 style3 s">沪上大学生邀请赛</td>
+            <td class="column1 style4 n">2021</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">同济飞盘</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">上海交通大学</td>
+            <td class="column8 style5 s">复旦大学</td>
+            <td class="column9 style5 s">对外经贸大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row42">
+            <td class="column0 style7 s">北京公开赛</td>
+            <td class="column1 style8 n">2021</td>
+            <td class="column2 style8 n">10</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">北京</td>
+            <td class="column5 style9 s">D-FLY</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">上海Huwa</td>
+            <td class="column8 style9 s">深圳动物园</td>
+            <td class="column9 style9 s">北京大哥</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row43">
+            <td class="column0 style3 s">温州公开赛</td>
+            <td class="column1 style4 n">2021</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">温州</td>
+            <td class="column5 style5 s">温州飞盘</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">CMBK</td>
+            <td class="column8 style5 s">杭州龙井虾仁</td>
+            <td class="column9 style5 s">难熬</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row44">
+            <td class="column0 style7 s">岭南公开赛</td>
+            <td class="column1 style8 n">2021</td>
+            <td class="column2 style8 n">9</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">广州</td>
+            <td class="column5 style9 s">荔枝飞盘</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">深圳Zen</td>
+            <td class="column8 style9 s">长沙湘北</td>
+            <td class="column9 style9 s">深圳大师</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row45">
+            <td class="column0 style3 s">多飞四季赛</td>
+            <td class="column1 style4 n">2021</td>
+            <td class="column2 style4 n">9</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">多飞飞盘</td>
+            <td class="column6 style4 n">9</td>
+            <td class="column7 style3 s">上海多飞</td>
+            <td class="column8 style5 s">上海黑猫</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row46">
+            <td class="column0 style3 s">嘉定邀请赛</td>
+            <td class="column1 style4 n">2021</td>
+            <td class="column2 style4 n">8</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">嘉定飞盘</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">苏州</td>
+            <td class="column8 style5 s">上海鲲鹏</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row47">
+            <td class="column0 style7 s">天津邀请赛</td>
+            <td class="column1 style8 n">2021</td>
+            <td class="column2 style8 n">7</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">天津</td>
+            <td class="column5 style9 s">天体速必得</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">北京大哥</td>
+            <td class="column8 style9 s">CMBK</td>
+            <td class="column9 style9 s">深圳Zen</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row48">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2021</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">公开</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 n">12</td>
+            <td class="column7 style7 s">Bei Jing</td>
+            <td class="column8 style9 s">上海出差</td>
+            <td class="column9 style9 s">北海北</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row49">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2021</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">女子</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 n">12</td>
+            <td class="column7 style7 s">上海Lumos</td>
+            <td class="column8 style9 s">北京京妞儿</td>
+            <td class="column9 style9 s">上海Sirens</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row50">
+            <td class="column0 style3 s">苏州青年交流赛</td>
+            <td class="column1 style4 n">2021</td>
+            <td class="column2 style4 n">6</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">苏州</td>
+            <td class="column5 style5 s">酥粥飞盘</td>
+            <td class="column6 style4 n">12</td>
+            <td class="column7 style3 s">桃罐头</td>
+            <td class="column8 style5 s">上海动物园</td>
+            <td class="column9 style5 s">宁诺UFO</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row51">
+            <td class="column0 style3 s">陕西大学生赛</td>
+            <td class="column1 style4 n">2021</td>
+            <td class="column2 style4 n">6</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">西安</td>
+            <td class="column5 style5 s">西安文理</td>
+            <td class="column6 style4 n">10</td>
+            <td class="column7 style3 null"></td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row52">
+            <td class="column0 style7 s">上海青少年赛</td>
+            <td class="column1 style8 n">2021</td>
+            <td class="column2 style8 n">5</td>
+            <td class="column3 style9 s">高中 混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">Jack</td>
+            <td class="column6 style8 n">15</td>
+            <td class="column7 style7 s">上海协和教科</td>
+            <td class="column8 style9 s">上海包玉刚</td>
+            <td class="column9 style9 s">昆山华东康桥</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row53">
+            <td class="column0 style3 s">上海超龄青少年赛</td>
+            <td class="column1 style4 n">2021</td>
+            <td class="column2 style4 n">5</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">Jack</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">00前</td>
+            <td class="column8 style5 s">包玉狼</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row54">
+            <td class="column0 style3 s">天津公开赛</td>
+            <td class="column1 style4 n">2021</td>
+            <td class="column2 style4 n">5</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">天津速必得</td>
+            <td class="column6 style4 n">15</td>
+            <td class="column7 style3 s">大连深海</td>
+            <td class="column8 style5 s">北京桃哥</td>
+            <td class="column9 style5 s">北京大罐</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row55">
+            <td class="column0 style3 s">武汉公开赛</td>
+            <td class="column1 style4 n">2021</td>
+            <td class="column2 style4 n">5</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">黄石</td>
+            <td class="column5 style5 s">地大飞盘</td>
+            <td class="column6 style4 n">14</td>
+            <td class="column7 style3 s">长沙湘北</td>
+            <td class="column8 style5 s">湖大</td>
+            <td class="column9 style5 s">宁诺UFO</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row56">
+            <td class="column0 style3 s">UIC邀请赛</td>
+            <td class="column1 style4 n">2021</td>
+            <td class="column2 style4 n">5</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">珠海</td>
+            <td class="column5 style5 s">UIC</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">深圳Zen</td>
+            <td class="column8 style5 s">广工UFO</td>
+            <td class="column9 style5 s">UIC校友</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row57">
+            <td class="column0 style7 s">广州公开赛</td>
+            <td class="column1 style8 n">2021</td>
+            <td class="column2 style8 n">4</td>
+            <td class="column3 style9 s">公开</td>
+            <td class="column4 style9 s">佛山</td>
+            <td class="column5 style9 s">GUPA</td>
+            <td class="column6 style8 n">5</td>
+            <td class="column7 style7 s">深圳男子</td>
+            <td class="column8 style9 s">上海出差</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row58">
+            <td class="column0 style7 s">广州公开赛</td>
+            <td class="column1 style8 n">2021</td>
+            <td class="column2 style8 n">4</td>
+            <td class="column3 style9 s">女子</td>
+            <td class="column4 style9 s">佛山</td>
+            <td class="column5 style9 s">GUPA</td>
+            <td class="column6 style8 n">5</td>
+            <td class="column7 style7 s">广州Mega Mad</td>
+            <td class="column8 style9 s">深圳还可以</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row59">
+            <td class="column0 style7 s">鼓浪屿赛</td>
+            <td class="column1 style8 n">2021</td>
+            <td class="column2 style8 n">4</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">厦门</td>
+            <td class="column5 style9 s">CNFD</td>
+            <td class="column6 style8 n">8</td>
+            <td class="column7 style7 s">CMBK</td>
+            <td class="column8 style9 s">福州火焰</td>
+            <td class="column9 style9 s">深圳</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row60">
+            <td class="column0 style3 s">西南联赛</td>
+            <td class="column1 style4 n">2021</td>
+            <td class="column2 style4 n">4</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">重庆</td>
+            <td class="column5 style5 s">重庆飞盘</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">成都Feipanda</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row61">
+            <td class="column0 style7 s">深圳邀请赛</td>
+            <td class="column1 style8 n">2021</td>
+            <td class="column2 style8 n">3</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">深圳</td>
+            <td class="column5 style9 s">深圳飞盘</td>
+            <td class="column6 style8 n">8</td>
+            <td class="column7 style7 s">深圳Zen</td>
+            <td class="column8 style9 s">北京大哥</td>
+            <td class="column9 style9 s">广州Storm</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row62">
+            <td class="column0 style7 s">宁波公开赛</td>
+            <td class="column1 style8 n">2021</td>
+            <td class="column2 style8 n">3</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">宁波</td>
+            <td class="column5 style9 s">宁波UFO</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">牛means牛</td>
+            <td class="column8 style9 n">2021</td>
+            <td class="column9 style9 s">北上广不相信眼泪</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row63">
+            <td class="column0 style3 s">多飞四季赛</td>
+            <td class="column1 style4 n">2021</td>
+            <td class="column2 style4 n">3</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">多飞飞盘</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">杭州龙井虾仁</td>
+            <td class="column8 style5 s">上海鲲鹏</td>
+            <td class="column9 style5 s">上海多飞</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row64">
+            <td class="column0 style7 s">广州公开赛</td>
+            <td class="column1 style8 n">2021</td>
+            <td class="column2 style8 n">1</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">佛山</td>
+            <td class="column5 style9 s">GUPA</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">上海Huwa</td>
+            <td class="column8 style9 s">深圳Zen</td>
+            <td class="column9 style9 s">广州Storm</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row65">
+            <td class="column0 style3 s">重庆公开赛</td>
+            <td class="column1 style4 n">2021</td>
+            <td class="column2 style4 n">1</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">重庆</td>
+            <td class="column5 style5 s">重庆飞盘</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">成都Feipanda</td>
+            <td class="column8 style5 s">湖大Huda</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row66">
+            <td class="column0 style3 s">翼鲲杯</td>
+            <td class="column1 style4 n">2020</td>
+            <td class="column2 style4 n">12</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">上海鲲鹏</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">上海鲲鹏</td>
+            <td class="column8 style5 s">上海黑猫</td>
+            <td class="column9 style5 s">同济TJUF</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row67">
+            <td class="column0 style3 s">杭州公开赛</td>
+            <td class="column1 style4 n">2020</td>
+            <td class="column2 style4 n">12</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">杭州</td>
+            <td class="column5 style5 s">飞盘文化</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">恒丰银行</td>
+            <td class="column8 style5 s">南师凤凰</td>
+            <td class="column9 style5 s">义乌懒人</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row68">
+            <td class="column0 style7 s">深圳佳兆业杯</td>
+            <td class="column1 style8 n">2020</td>
+            <td class="column2 style8 n">11</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">深圳</td>
+            <td class="column5 style9 s">佳兆业</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">广州Storm</td>
+            <td class="column8 style9 s">CUaGain</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row69">
+            <td class="column0 style3 s">翼鲲杯</td>
+            <td class="column1 style4 n">2020</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">飞盘文化</td>
+            <td class="column6 style4 n">9</td>
+            <td class="column7 style3 s">上海Huwa</td>
+            <td class="column8 style5 s">上海Lumos</td>
+            <td class="column9 style5 s">上海Huligan</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row70">
+            <td class="column0 style3 s">西南联赛</td>
+            <td class="column1 style4 n">2020</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">西安</td>
+            <td class="column5 style5 s">西安肉夹馍</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 null"></td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row71">
+            <td class="column0 style7 s">北京公开赛</td>
+            <td class="column1 style8 n">2020</td>
+            <td class="column2 style8 n">10</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">北京</td>
+            <td class="column5 style9 s">D-FLY</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">北京大哥</td>
+            <td class="column8 style9 s">上海Huwa Y</td>
+            <td class="column9 style9 s">深圳Zen</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row72">
+            <td class="column0 style7 s">长沙公开赛</td>
+            <td class="column1 style8 n">2020</td>
+            <td class="column2 style8 n">10</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">长沙</td>
+            <td class="column5 style9 s">长沙飞盘</td>
+            <td class="column6 style8 n">14</td>
+            <td class="column7 style7 s">上海Huwa</td>
+            <td class="column8 style9 s">长沙湘北</td>
+            <td class="column9 style9 s">广州Storm</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row73">
+            <td class="column0 style7 s">龙城杯邀请赛</td>
+            <td class="column1 style8 n">2020</td>
+            <td class="column2 style8 n">9</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">常州</td>
+            <td class="column5 style9 s">贝特曼体育</td>
+            <td class="column6 style8 n">8</td>
+            <td class="column7 style7 s">上海Huwa X</td>
+            <td class="column8 style9 s">广州Storm</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row74">
+            <td class="column0 style7 s">深圳邀请赛</td>
+            <td class="column1 style8 n">2020</td>
+            <td class="column2 style8 n">8</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">深圳</td>
+            <td class="column5 style9 s">深圳飞盘</td>
+            <td class="column6 style8 n">8</td>
+            <td class="column7 style7 s">广州Storm</td>
+            <td class="column8 style9 s">深圳Zen</td>
+            <td class="column9 style9 s">深圳乐奥</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row75">
+            <td class="column0 style3 s">天津邀请赛</td>
+            <td class="column1 style4 n">2020</td>
+            <td class="column2 style4 n">8</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">天体速必得</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">北京大哥</td>
+            <td class="column8 style5 s">快乐生活</td>
+            <td class="column9 style5 s">PKP大薯</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row76">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2020</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">公开</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 n">8</td>
+            <td class="column7 style7 s">上海Chaiger King</td>
+            <td class="column8 style9 s">深圳男子</td>
+            <td class="column9 style9 s">北京老炮儿</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row77">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2020</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">女子</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 n">8</td>
+            <td class="column7 style7 s">Mega-Jing</td>
+            <td class="column8 style9 s">深圳还可以</td>
+            <td class="column9 style9 s">Angling</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row78">
+            <td class="column0 style7 s">福建公开赛</td>
+            <td class="column1 style8 n">2019</td>
+            <td class="column2 style8 n">12</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">福州</td>
+            <td class="column5 style9 s">福州火焰</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">香港Junk</td>
+            <td class="column8 style9 s">厦门白鹭</td>
+            <td class="column9 style9 s">广州Storm</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row79">
+            <td class="column0 style3 s">常州圣诞赛</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">12</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">常州</td>
+            <td class="column5 style5 s">贝特曼体育</td>
+            <td class="column6 style4 n">9</td>
+            <td class="column7 style3 s">桃罐头</td>
+            <td class="column8 style5 s">Drunk</td>
+            <td class="column9 style5 s">常州Rocky</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row80">
+            <td class="column0 style3 s">重庆公开赛</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">12</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">重庆</td>
+            <td class="column5 style5 s">重庆飞盘</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">成大Forange</td>
+            <td class="column8 style5 s">天体Speed</td>
+            <td class="column9 style5 s">重庆火锅英雄</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row81">
+            <td class="column0 style7 s">海南公开赛</td>
+            <td class="column1 style8 n">2019</td>
+            <td class="column2 style8 n">11</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">海口</td>
+            <td class="column5 style9 s">海南飞盘</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">菲律宾Amihan</td>
+            <td class="column8 style9 s">新加坡ZeroDisplacement</td>
+            <td class="column9 style9 s">大连联邦</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row82">
+            <td class="column0 style3 s">CUUA华东</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">13</td>
+            <td class="column7 style3 s">南京师范大学</td>
+            <td class="column8 style5 s">南京体育学院</td>
+            <td class="column9 style5 s">宁波诺丁汉大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row83">
+            <td class="column0 style3 s">CUUA华北</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">北京体育大学</td>
+            <td class="column8 style5 s">河北医科大学</td>
+            <td class="column9 style5 s">天津体育学院</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row84">
+            <td class="column0 style3 s">CUUA华南</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">佛山</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">9</td>
+            <td class="column7 style3 s">华南理工大学</td>
+            <td class="column8 style5 s">东莞理工学院</td>
+            <td class="column9 style5 s">广州大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row85">
+            <td class="column0 style3 s">CUUA华中</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">武汉</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">湖南大学</td>
+            <td class="column8 style5 s">中南大学</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row86">
+            <td class="column0 style3 s">CUUA东北</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">大连</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">10</td>
+            <td class="column7 style3 s">大连理工大学</td>
+            <td class="column8 style5 s">大连艺术学院</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row87">
+            <td class="column0 style3 s">CUUA华西</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">西安</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">7</td>
+            <td class="column7 style3 s">成都大学</td>
+            <td class="column8 style5 s">重庆大学</td>
+            <td class="column9 style5 s">西安交通大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row88">
+            <td class="column0 style3 s">U24联赛</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">飞盘文化</td>
+            <td class="column6 style4 n">10</td>
+            <td class="column7 style3 s">长沙1970</td>
+            <td class="column8 style5 s">南京小盆友</td>
+            <td class="column9 style5 s">江浙沪幼稚园</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row89">
+            <td class="column0 style3 s">西浦邀请赛</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">苏州</td>
+            <td class="column5 style5 s">西浦飞盘</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">宁波诺丁汉大学</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row90">
+            <td class="column0 style3 s">武汉公开赛</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">武汉</td>
+            <td class="column5 style5 s">地大飞盘</td>
+            <td class="column6 style4 n">11</td>
+            <td class="column7 style3 s">长沙湘北</td>
+            <td class="column8 style5 s">海鸽</td>
+            <td class="column9 style5 s">义乌懒人</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row91">
+            <td class="column0 style3 s">科大杯</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">可积飞盘</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">上海平和</td>
+            <td class="column8 style5 s">上海包玉刚</td>
+            <td class="column9 style5 s">同济大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row92">
+            <td class="column0 style3 s">河北公开赛</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">石家庄</td>
+            <td class="column5 style5 s">凯腾体育</td>
+            <td class="column6 style4 n">7</td>
+            <td class="column7 style3 s">北京小混混</td>
+            <td class="column8 style5 s">大连疯人院</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row93">
+            <td class="column0 style7 s">广州公开赛</td>
+            <td class="column1 style8 n">2019</td>
+            <td class="column2 style8 n">9</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">佛山</td>
+            <td class="column5 style9 s">GUPA</td>
+            <td class="column6 style8 n">15</td>
+            <td class="column7 style7 s">香港Unicorn</td>
+            <td class="column8 style9 s">再回首</td>
+            <td class="column9 style9 s">香港Junk</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row94">
+            <td class="column0 style3 s">袋鼠杯</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">9</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">常州</td>
+            <td class="column5 style5 s">袋鼠</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">上海Huligan</td>
+            <td class="column8 style5 s">南京枪花</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row95">
+            <td class="column0 style7 s">世界休闲体育大会</td>
+            <td class="column1 style8 n">2019</td>
+            <td class="column2 style8 n">8</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">青岛</td>
+            <td class="column5 style9 s">世界休闲组织</td>
+            <td class="column6 style8 n">8</td>
+            <td class="column7 style7 s">新加坡SIM</td>
+            <td class="column8 style9 s">台中</td>
+            <td class="column9 style9 s">上海Huwa</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row96">
+            <td class="column0 style7 s">亚锦赛AOUGC</td>
+            <td class="column1 style8 n">2019</td>
+            <td class="column2 style8 n">7</td>
+            <td class="column3 style9 s">公开</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">飞盘文化</td>
+            <td class="column6 style8 n">7</td>
+            <td class="column7 style7 s">日本</td>
+            <td class="column8 style9 s">澳大利亚</td>
+            <td class="column9 style9 s">中华台北</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row97">
+            <td class="column0 style7 s">亚锦赛AOUGC</td>
+            <td class="column1 style8 n">2019</td>
+            <td class="column2 style8 n">7</td>
+            <td class="column3 style9 s">女子</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">飞盘文化</td>
+            <td class="column6 style8 n">7</td>
+            <td class="column7 style7 s">日本</td>
+            <td class="column8 style9 s">澳大利亚</td>
+            <td class="column9 style9 s">菲律宾</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row98">
+            <td class="column0 style7 s">亚锦赛AOUGC</td>
+            <td class="column1 style8 n">2019</td>
+            <td class="column2 style8 n">7</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">飞盘文化</td>
+            <td class="column6 style8 n">11</td>
+            <td class="column7 style7 s">菲律宾</td>
+            <td class="column8 style9 s">日本</td>
+            <td class="column9 style9 s">印度</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row99">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2019</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">公开</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 n">12</td>
+            <td class="column7 style7 s">上海Puxi Patrol</td>
+            <td class="column8 style9 s">北京老炮儿</td>
+            <td class="column9 style9 s">AOUGC男子</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row100">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2019</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">女子</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 n">8</td>
+            <td class="column7 style7 s">上海Sirens</td>
+            <td class="column8 style9 s">菲律宾Bad Blood</td>
+            <td class="column9 style9 s">AOUGC女子</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row101">
+            <td class="column0 style3 s">长沙公开赛</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">6</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">长沙</td>
+            <td class="column5 style5 s">长沙飞盘</td>
+            <td class="column6 style4 n">16</td>
+            <td class="column7 style3 s">长沙湘北</td>
+            <td class="column8 style5 s">成都Feipanda</td>
+            <td class="column9 style5 s">CUT</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row102">
+            <td class="column0 style7 s">上海青少年赛</td>
+            <td class="column1 style8 n">2019</td>
+            <td class="column2 style8 n">5</td>
+            <td class="column3 style9 s">高中 混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">Jack</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">香港汉基</td>
+            <td class="column8 style9 s">上海平和</td>
+            <td class="column9 style9 s">上海包玉刚</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row103">
+            <td class="column0 style7 s">CUUA总决赛</td>
+            <td class="column1 style8 n">2019</td>
+            <td class="column2 style8 n">5</td>
+            <td class="column3 style9 s">大学 混合</td>
+            <td class="column4 style9 s">厦门</td>
+            <td class="column5 style9 s">CNFD</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">大连理工大学</td>
+            <td class="column8 style9 s">南京体育学院</td>
+            <td class="column9 style9 s">河北医科大学</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row104">
+            <td class="column0 style3 s">天津公开赛</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">5</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">天津速必得</td>
+            <td class="column6 style4 n">11</td>
+            <td class="column7 style3 s">新十二</td>
+            <td class="column8 style5 s">天体Speed</td>
+            <td class="column9 style5 s">U24</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row105">
+            <td class="column0 style3 s">河南邀请赛</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">5</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">郑州</td>
+            <td class="column5 style5 s">西亚斯黄帝</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">河北医路飞</td>
+            <td class="column8 style5 s">西亚斯黄帝</td>
+            <td class="column9 style5 s">锡南联队</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row106">
+            <td class="column0 style3 s">UIC邀请赛</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">5</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">珠海</td>
+            <td class="column5 style5 s">UIC</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 null"></td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row107">
+            <td class="column0 style7 s">深圳邀请赛</td>
+            <td class="column1 style8 n">2019</td>
+            <td class="column2 style8 n">4</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">深圳</td>
+            <td class="column5 style9 s">深圳飞盘</td>
+            <td class="column6 style8 n">11</td>
+            <td class="column7 style7 s">上海乃肥</td>
+            <td class="column8 style9 s">香港Wo(men)'s</td>
+            <td class="column9 style9 s">深圳乐奥</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row108">
+            <td class="column0 style3 s">同济邀请赛</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">4</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">同济飞盘</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 null"></td>
+            <td class="column8 style5 s">同济大学</td>
+            <td class="column9 style5 s">复旦大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row109">
+            <td class="column0 style3 s">宁波公开赛</td>
+            <td class="column1 style4 n">2019</td>
+            <td class="column2 style4 n">3</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">宁波</td>
+            <td class="column5 style5 s">宁波UFO</td>
+            <td class="column6 style4 n">16</td>
+            <td class="column7 style3 s">新加坡NYP</td>
+            <td class="column8 style5 s">大连联邦</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row110">
+            <td class="column0 style7 s">中国公开赛</td>
+            <td class="column1 style8 n">2018</td>
+            <td class="column2 style8 n">12</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">佛山</td>
+            <td class="column5 style9 s">GUPA</td>
+            <td class="column6 style8 n">24</td>
+            <td class="column7 style7 s">北京大哥</td>
+            <td class="column8 style9 s">宁波BH</td>
+            <td class="column9 style9 s">香港Junk</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row111">
+            <td class="column0 style3 s">常州圣诞赛</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">12</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">常州</td>
+            <td class="column5 style5 s">贝特曼体育</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 null"></td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row112">
+            <td class="column0 style3 s">CUUA华东</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">12</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">12</td>
+            <td class="column7 style3 s">南京师范大学</td>
+            <td class="column8 style5 s">宁波诺丁汉大学</td>
+            <td class="column9 style5 s">南京体育学院</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row113">
+            <td class="column0 style3 s">CUUA华北</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">7</td>
+            <td class="column7 style3 s">清华大学</td>
+            <td class="column8 style5 s">河北医科大学</td>
+            <td class="column9 style5 s">天津体育学院</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row114">
+            <td class="column0 style3 s">CUUA华南</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">佛山</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">11</td>
+            <td class="column7 style3 s">广东工业大学</td>
+            <td class="column8 style5 s">华南理工大学</td>
+            <td class="column9 style5 s">广州培正学院</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row115">
+            <td class="column0 style3 s">CUUA华中</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">武汉</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">3</td>
+            <td class="column7 style3 s">湖南大学</td>
+            <td class="column8 style5 s">中国地质大学</td>
+            <td class="column9 style5 s">中南大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row116">
+            <td class="column0 style3 s">CUUA华西</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">西安</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">成都大学</td>
+            <td class="column8 style5 s">重庆大学</td>
+            <td class="column9 style5 s">西安体育学院</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row117">
+            <td class="column0 style7 s">武汉公开赛</td>
+            <td class="column1 style8 n">2018</td>
+            <td class="column2 style8 n">10</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">武汉</td>
+            <td class="column5 style9 s">地大飞盘</td>
+            <td class="column6 style8 n">11</td>
+            <td class="column7 style7 s">长沙湘北</td>
+            <td class="column8 style9 s">广州Storm</td>
+            <td class="column9 style9 s">CUG&amp;F</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row118">
+            <td class="column0 style3 s">重庆公开赛</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">重庆</td>
+            <td class="column5 style5 s">重庆飞盘</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">深圳鸽队</td>
+            <td class="column8 style5 s">成都Feipanda</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row119">
+            <td class="column0 style3 s">大学生邀请赛</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">9</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">长沙</td>
+            <td class="column5 style5 s">长沙飞盘</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">南京师范大学</td>
+            <td class="column8 style5 s">中南大学</td>
+            <td class="column9 style5 s">湖南大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row120">
+            <td class="column0 style7 s">北京碗</td>
+            <td class="column1 style8 n">2018</td>
+            <td class="column2 style8 n">9</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">北京</td>
+            <td class="column5 style9 s">BUC</td>
+            <td class="column6 style8 n">10</td>
+            <td class="column7 style7 s">上海Huwa</td>
+            <td class="column8 style9 s">北京大哥</td>
+            <td class="column9 style9 s">七月流火</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row121">
+            <td class="column0 style3 s">袋鼠杯</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">9</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">袋鼠</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 null"></td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row122">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2018</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">公开</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 n">14</td>
+            <td class="column7 style7 s">上海出差</td>
+            <td class="column8 style9 s">香港Nutscracker</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row123">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2018</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">女子</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 n">10</td>
+            <td class="column7 style7 s">上海Sirens</td>
+            <td class="column8 style9 s">韩国Future Friends</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row124">
+            <td class="column0 style3 s">长沙公开赛</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">6</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">长沙</td>
+            <td class="column5 style5 s">长沙飞盘</td>
+            <td class="column6 style4 n">7</td>
+            <td class="column7 style3 s">长沙湘北</td>
+            <td class="column8 style5 s">广州Future</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row125">
+            <td class="column0 style3 s">大连公开赛</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">6</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">大连</td>
+            <td class="column5 style5 s">大工飞盘</td>
+            <td class="column6 style4 n">12</td>
+            <td class="column7 style3 s">大连联邦</td>
+            <td class="column8 style5 s">大工蓝精灵</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row126">
+            <td class="column0 style7 s">上海青少年赛</td>
+            <td class="column1 style8 n">2018</td>
+            <td class="column2 style8 n">5</td>
+            <td class="column3 style9 s">高中 混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">Jack</td>
+            <td class="column6 style8 n">18</td>
+            <td class="column7 style7 s">香港汉基</td>
+            <td class="column8 style9 s">上海平和</td>
+            <td class="column9 style9 s">天津枫叶</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row127">
+            <td class="column0 style7 s">南京公开赛</td>
+            <td class="column1 style8 n">2018</td>
+            <td class="column2 style8 n">5</td>
+            <td class="column3 style9 s">公开</td>
+            <td class="column4 style9 s">南京</td>
+            <td class="column5 style9 s">南京飞盘</td>
+            <td class="column6 style8 n">10</td>
+            <td class="column7 style7 s">北京老炮儿</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row128">
+            <td class="column0 style7 s">南京公开赛</td>
+            <td class="column1 style8 n">2018</td>
+            <td class="column2 style8 n">5</td>
+            <td class="column3 style9 s">女子</td>
+            <td class="column4 style9 s">南京</td>
+            <td class="column5 style9 s">南京飞盘</td>
+            <td class="column6 style8 n">4</td>
+            <td class="column7 style7 s">上海Sirens</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row129">
+            <td class="column0 style3 s">天津公开赛</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">5</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">天津速必得</td>
+            <td class="column6 style4 n">7</td>
+            <td class="column7 style3 s">北方</td>
+            <td class="column8 style5 s">天体Speed</td>
+            <td class="column9 style5 s">老北京儿</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row130">
+            <td class="column0 style3 s">河南邀请赛</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">5</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">郑州</td>
+            <td class="column5 style5 s">西亚斯黄帝</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">大连菜鸟博士</td>
+            <td class="column8 style5 s">西亚斯黄帝</td>
+            <td class="column9 style5 s">合肥庐州</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row131">
+            <td class="column0 style7 s">CUUA总决赛</td>
+            <td class="column1 style8 n">2018</td>
+            <td class="column2 style8 n">4</td>
+            <td class="column3 style9 s">大学 混合</td>
+            <td class="column4 style9 s">长沙</td>
+            <td class="column5 style9 s">CUUA</td>
+            <td class="column6 style8 n">12</td>
+            <td class="column7 style7 s">广东工业大学</td>
+            <td class="column8 style9 s">宁波诺丁汉大学</td>
+            <td class="column9 style9 s">大连理工大学</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row132">
+            <td class="column0 style3 s">西南联赛</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">4</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">成都</td>
+            <td class="column5 style5 s">成都飞盘大</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 null"></td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row133">
+            <td class="column0 style7 s">广州公开赛</td>
+            <td class="column1 style8 n">2018</td>
+            <td class="column2 style8 n">3</td>
+            <td class="column3 style9 s">公开</td>
+            <td class="column4 style9 s">佛山</td>
+            <td class="column5 style9 s">GUPA</td>
+            <td class="column6 style8 n">11</td>
+            <td class="column7 style7 s">广州Super Storm</td>
+            <td class="column8 style9 s">香港Nutscracker</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row134">
+            <td class="column0 style7 s">广州公开赛</td>
+            <td class="column1 style8 n">2018</td>
+            <td class="column2 style8 n">3</td>
+            <td class="column3 style9 s">女子</td>
+            <td class="column4 style9 s">佛山</td>
+            <td class="column5 style9 s">GUPA</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">H.S.B.C</td>
+            <td class="column8 style9 s">香港Black Kite</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row135">
+            <td class="column0 style7 s">深圳邀请赛</td>
+            <td class="column1 style8 n">2018</td>
+            <td class="column2 style8 n">3</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">深圳</td>
+            <td class="column5 style9 s">深圳飞盘</td>
+            <td class="column6 style8 n">12</td>
+            <td class="column7 style7 s">上海乃肥</td>
+            <td class="column8 style9 s">香港DoubleT</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row136">
+            <td class="column0 style3 s">常州交流赛</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 n">3</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">常州</td>
+            <td class="column5 style5 s">贝特曼体育</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">上海Huligan</td>
+            <td class="column8 style5 s">南体猎户</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row137">
+            <td class="column0 style3 s">CUUA东北</td>
+            <td class="column1 style4 n">2018</td>
+            <td class="column2 style4 null"></td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">大连</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">大连理工大学</td>
+            <td class="column8 style5 s">大连海事大学</td>
+            <td class="column9 style5 s">大连艺术学院</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row138">
+            <td class="column0 style7 s">福建公开赛</td>
+            <td class="column1 style8 n">2017</td>
+            <td class="column2 style8 n">12</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">福州</td>
+            <td class="column5 style9 s">福州火焰</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">南京小盆友</td>
+            <td class="column8 style9 s">上海Puxi Patrol</td>
+            <td class="column9 style9 s">北京大哥</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row139">
+            <td class="column0 style3 s">常州圣诞赛</td>
+            <td class="column1 style4 n">2017</td>
+            <td class="column2 style4 n">12</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">常州</td>
+            <td class="column5 style5 s">贝特曼体育</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 null"></td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row140">
+            <td class="column0 style3 s">同济邀请赛</td>
+            <td class="column1 style4 n">2017</td>
+            <td class="column2 style4 n">12</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">同济飞盘</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">同济大学</td>
+            <td class="column8 style5 s">复旦大学</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row141">
+            <td class="column0 style3 s">CUUA华东</td>
+            <td class="column1 style4 n">2017</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">南京</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">9</td>
+            <td class="column7 style3 s">宁波诺丁汉大学</td>
+            <td class="column8 style5 s">同济大学</td>
+            <td class="column9 style5 s">西交利物浦大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row142">
+            <td class="column0 style3 s">CUUA华北</td>
+            <td class="column1 style4 n">2017</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">北京</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">4</td>
+            <td class="column7 style3 s">北京体育大学</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row143">
+            <td class="column0 style3 s">CUUA华南</td>
+            <td class="column1 style4 n">2017</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">珠海</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">12</td>
+            <td class="column7 style3 s">广东工业大学</td>
+            <td class="column8 style5 s">广州大学</td>
+            <td class="column9 style5 s">北京师范大学珠海</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row144">
+            <td class="column0 style3 s">CUUA华中</td>
+            <td class="column1 style4 n">2017</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">长沙</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">湖南大学</td>
+            <td class="column8 style5 s">中国地质大学</td>
+            <td class="column9 style5 s">湖北工业大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row145">
+            <td class="column0 style3 s">CUUA东北</td>
+            <td class="column1 style4 n">2017</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">大连</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">大连理工大学</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row146">
+            <td class="column0 style3 s">CUUA华西</td>
+            <td class="column1 style4 n">2017</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">西安</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">成都大学</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row147">
+            <td class="column0 style3 s">长沙公开赛</td>
+            <td class="column1 style4 n">2017</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">长沙</td>
+            <td class="column5 style5 s">长沙飞盘</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">长沙湘北</td>
+            <td class="column8 style5 s">金砖鸽子</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row148">
+            <td class="column0 style7 s">武汉公开赛</td>
+            <td class="column1 style8 n">2017</td>
+            <td class="column2 style8 n">10</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">武汉</td>
+            <td class="column5 style9 s">地大飞盘</td>
+            <td class="column6 style8 n">12</td>
+            <td class="column7 style7 s">Frisbeer</td>
+            <td class="column8 style9 s">长沙湘北</td>
+            <td class="column9 style9 s">深圳Zen</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row149">
+            <td class="column0 style7 s">广州公开赛</td>
+            <td class="column1 style8 n">2017</td>
+            <td class="column2 style8 n">9</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">佛山</td>
+            <td class="column5 style9 s">GUPA</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">香港DoubleT</td>
+            <td class="column8 style9 s">香港Junk</td>
+            <td class="column9 style9 s">广工UFO</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row150">
+            <td class="column0 style7 s">北京碗</td>
+            <td class="column1 style8 n">2017</td>
+            <td class="column2 style8 n">9</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">北京</td>
+            <td class="column5 style9 s">BUC</td>
+            <td class="column6 style8 n">10</td>
+            <td class="column7 style7 s">北京大哥</td>
+            <td class="column8 style9 s">上海Huwa</td>
+            <td class="column9 style9 s">U24</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row151">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2017</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 n">24</td>
+            <td class="column7 style7 s">上海Huwa</td>
+            <td class="column8 style9 s">北京大哥</td>
+            <td class="column9 style9 s">香港DoubleT</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row152">
+            <td class="column0 style7 s">中国公开赛</td>
+            <td class="column1 style8 n">2017</td>
+            <td class="column2 style8 n">5</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">南京</td>
+            <td class="column5 style9 s">南京飞盘</td>
+            <td class="column6 style8 n">23</td>
+            <td class="column7 style7 s">上海Huwa</td>
+            <td class="column8 style9 s">香港DoubleT</td>
+            <td class="column9 style9 s">南京枪花</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row153">
+            <td class="column0 style7 s">上海青少年赛</td>
+            <td class="column1 style8 n">2017</td>
+            <td class="column2 style8 n">5</td>
+            <td class="column3 style9 s">高中 混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">Jack</td>
+            <td class="column6 style8 n">18</td>
+            <td class="column7 style7 s">香港汉基</td>
+            <td class="column8 style9 s">上海南模</td>
+            <td class="column9 style9 s">上海协和教科</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row154">
+            <td class="column0 style3 s">北京交流赛</td>
+            <td class="column1 style4 n">2017</td>
+            <td class="column2 style4 n">5</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">北京</td>
+            <td class="column5 style5 s">BUC</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">北京帮</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row155">
+            <td class="column0 style3 s">河南邀请赛</td>
+            <td class="column1 style4 n">2017</td>
+            <td class="column2 style4 n">4</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">郑州</td>
+            <td class="column5 style5 s">升达</td>
+            <td class="column6 style4 n">5</td>
+            <td class="column7 style3 s">西安肉夹馍</td>
+            <td class="column8 style5 s">湖北工业大学</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row156">
+            <td class="column0 style7 s">CUUA总决赛</td>
+            <td class="column1 style8 n">2017</td>
+            <td class="column2 style8 n">4</td>
+            <td class="column3 style9 s">大学 混合</td>
+            <td class="column4 style9 s">武汉</td>
+            <td class="column5 style9 s">CUUA</td>
+            <td class="column6 style8 n">12</td>
+            <td class="column7 style7 s">中国地质大学</td>
+            <td class="column8 style9 s">广东工业大学</td>
+            <td class="column9 style9 s">南京体育学院</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row157">
+            <td class="column0 style3 s">宁波公开赛</td>
+            <td class="column1 style4 n">2017</td>
+            <td class="column2 style4 n">4</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">宁波</td>
+            <td class="column5 style5 s">宁波UFO</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">上海Puxi Patrol</td>
+            <td class="column8 style5 s">上海Pudong De Dong</td>
+            <td class="column9 style5 s">宁诺UFO</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row158">
+            <td class="column0 style7 s">深圳邀请赛</td>
+            <td class="column1 style8 n">2017</td>
+            <td class="column2 style8 n">3</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">深圳</td>
+            <td class="column5 style9 s">深圳飞盘</td>
+            <td class="column6 style8 n">12</td>
+            <td class="column7 style7 s">北京大哥</td>
+            <td class="column8 style9 s">台湾清华</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row159">
+            <td class="column0 style7 s">SCSC邀请赛</td>
+            <td class="column1 style8 n">2017</td>
+            <td class="column2 style8 n">3</td>
+            <td class="column3 style9 s">公开</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 n">12</td>
+            <td class="column7 style7 s">上海Puxi Patrol</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row160">
+            <td class="column0 style7 s">SCSC邀请赛</td>
+            <td class="column1 style8 n">2017</td>
+            <td class="column2 style8 n">3</td>
+            <td class="column3 style9 s">女子</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 n">8</td>
+            <td class="column7 style7 s">南山南</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row161">
+            <td class="column0 style7 s">福建公开赛</td>
+            <td class="column1 style8 n">2016</td>
+            <td class="column2 style8 n">12</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">福州</td>
+            <td class="column5 style9 s">福州火焰</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">上海Puxi Patrol</td>
+            <td class="column8 style9 s">香港DoubleT</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row162">
+            <td class="column0 style3 s">CUUA华东</td>
+            <td class="column1 style4 n">2016</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">宁波</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">9</td>
+            <td class="column7 style3 s">西交利物浦大学</td>
+            <td class="column8 style5 s">宁波诺丁汉大学</td>
+            <td class="column9 style5 s">南京体育学院</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row163">
+            <td class="column0 style3 s">CUUA华北</td>
+            <td class="column1 style4 n">2016</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">北京</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">天津体育学院</td>
+            <td class="column8 style5 s">北京体育大学</td>
+            <td class="column9 style5 s">清华大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row164">
+            <td class="column0 style3 s">CUUA华南</td>
+            <td class="column1 style4 n">2016</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">广州</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">11</td>
+            <td class="column7 style3 s">广东工业大学</td>
+            <td class="column8 style5 s">华南农业大学</td>
+            <td class="column9 style5 s">华南理工大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row165">
+            <td class="column0 style3 s">CUUA华中</td>
+            <td class="column1 style4 n">2016</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">武汉</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">中国地质大学</td>
+            <td class="column8 style5 s">中南大学</td>
+            <td class="column9 style5 s">湖北工业大学</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row166">
+            <td class="column0 style3 s">CUUA东北</td>
+            <td class="column1 style4 n">2016</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">大连</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">大连理工大学</td>
+            <td class="column8 style5 s">大连海事大学</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row167">
+            <td class="column0 style3 s">武汉公开赛</td>
+            <td class="column1 style4 n">2016</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">武汉</td>
+            <td class="column5 style5 s">地大飞盘</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">长沙湘北</td>
+            <td class="column8 style5 s">西浦Sipo</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row168">
+            <td class="column0 style7 s">广州公开赛</td>
+            <td class="column1 style8 n">2016</td>
+            <td class="column2 style8 n">9</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">佛山</td>
+            <td class="column5 style9 s">GUPA</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">长沙湘北</td>
+            <td class="column8 style9 s">香港Junk</td>
+            <td class="column9 style9 s">东莞POD</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row169">
+            <td class="column0 style7 s">北京碗</td>
+            <td class="column1 style8 n">2016</td>
+            <td class="column2 style8 n">9</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">北京</td>
+            <td class="column5 style9 s">BUC</td>
+            <td class="column6 style8 n">11</td>
+            <td class="column7 style7 s">韩国LGW</td>
+            <td class="column8 style9 s">上海Huwa</td>
+            <td class="column9 style9 s">北京大哥</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row170">
+            <td class="column0 style3 s">天津公开赛</td>
+            <td class="column1 style4 n">2016</td>
+            <td class="column2 style4 n">9</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">天津速必得</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">北京大哥</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row171">
+            <td class="column0 style7 s">亚洲女子邀请赛</td>
+            <td class="column1 style8 n">2016</td>
+            <td class="column2 style8 n">8</td>
+            <td class="column3 style9 s">女子</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">贝特曼体育</td>
+            <td class="column6 style8 n">9</td>
+            <td class="column7 style7 s">台湾COIN</td>
+            <td class="column8 style9 s">香港BFF</td>
+            <td class="column9 style9 s">上海Sirens</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row172">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2016</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 n">26</td>
+            <td class="column7 style7 s">上海Huwa</td>
+            <td class="column8 style9 s">熊猫</td>
+            <td class="column9 style9 s">零元素</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row173">
+            <td class="column0 style7 s">中国公开赛</td>
+            <td class="column1 style8 n">2016</td>
+            <td class="column2 style8 n">5</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">杭州</td>
+            <td class="column5 style9 s">HUPA</td>
+            <td class="column6 style8 n">23</td>
+            <td class="column7 style7 s">上海Huwa</td>
+            <td class="column8 style9 s">大风车</td>
+            <td class="column9 style9 s">香港</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row174">
+            <td class="column0 style7 s">上海青少年赛</td>
+            <td class="column1 style8 n">2016</td>
+            <td class="column2 style8 n">5</td>
+            <td class="column3 style9 s">高中 混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">Jack</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">香港汉基</td>
+            <td class="column8 style9 s">上海南模</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row175">
+            <td class="column0 style3 s">长沙公开赛</td>
+            <td class="column1 style4 n">2016</td>
+            <td class="column2 style4 n">5</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">长沙</td>
+            <td class="column5 style5 s">长沙飞盘</td>
+            <td class="column6 style4 n">8</td>
+            <td class="column7 style3 s">广州Storm</td>
+            <td class="column8 style5 s">广州Future</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row176">
+            <td class="column0 style3 s">南京公开赛</td>
+            <td class="column1 style4 n">2016</td>
+            <td class="column2 style4 n">4</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">南京</td>
+            <td class="column5 style5 s">南京飞盘</td>
+            <td class="column6 style4 n">14</td>
+            <td class="column7 style3 s">上海Huwa Rouge</td>
+            <td class="column8 style5 s">上海Huwa Beast</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row177">
+            <td class="column0 style3 s">宁波公开赛</td>
+            <td class="column1 style4 n">2016</td>
+            <td class="column2 style4 n">4</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">宁波</td>
+            <td class="column5 style5 s">宁波UFO</td>
+            <td class="column6 style4 n">12</td>
+            <td class="column7 style3 s">I trust U</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row178">
+            <td class="column0 style7 s">SCSC邀请赛</td>
+            <td class="column1 style8 n">2016</td>
+            <td class="column2 style8 n">3</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">贝特曼体育</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">上海Huwa Blue</td>
+            <td class="column8 style9 s">上海Huwa Gold</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row179">
+            <td class="column0 style7 s">福建公开赛</td>
+            <td class="column1 style8 n">2015</td>
+            <td class="column2 style8 n">12</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">厦门</td>
+            <td class="column5 style9 s">厦门白鹭</td>
+            <td class="column6 style8 n">16</td>
+            <td class="column7 style7 s">宁波红钳</td>
+            <td class="column8 style9 s">地大CUG</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row180">
+            <td class="column0 style7 s">CUUA总决赛</td>
+            <td class="column1 style8 n">2015</td>
+            <td class="column2 style8 n">11</td>
+            <td class="column3 style9 s">大学 混合</td>
+            <td class="column4 style9 s">南京</td>
+            <td class="column5 style9 s">CUUA</td>
+            <td class="column6 style8 n">8</td>
+            <td class="column7 style7 s">南京体育学院</td>
+            <td class="column8 style9 s">西交利物浦大学</td>
+            <td class="column9 style9 s">中国地质大学</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row181">
+            <td class="column0 style3 s">CUUA华东</td>
+            <td class="column1 style4 n">2015</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">上海</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">宁波诺丁汉大学</td>
+            <td class="column8 style5 s">西交利物浦大学</td>
+            <td class="column9 style5 s">南京体育学院</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row182">
+            <td class="column0 style3 s">CUUA华南</td>
+            <td class="column1 style4 n">2015</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">广州</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">华南理工大学</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row183">
+            <td class="column0 style3 s">CUUA华中</td>
+            <td class="column1 style4 n">2015</td>
+            <td class="column2 style4 n">11</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">武汉</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">中国地质大学</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row184">
+            <td class="column0 style3 s">CUUA华北</td>
+            <td class="column1 style4 n">2015</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">北京</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">3</td>
+            <td class="column7 style3 s">天津体育学院</td>
+            <td class="column8 style5 s">清华大学</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row185">
+            <td class="column0 style3 s">CUUA华西</td>
+            <td class="column1 style4 n">2015</td>
+            <td class="column2 style4 n">10</td>
+            <td class="column3 style5 s">大学 混合</td>
+            <td class="column4 style5 s">西安</td>
+            <td class="column5 style5 s">CUUA</td>
+            <td class="column6 style4 n">3</td>
+            <td class="column7 style3 s">西安欧亚学院</td>
+            <td class="column8 style5 s">西安交通大学</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row186">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2015</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 n">24</td>
+            <td class="column7 style7 s">熊猫</td>
+            <td class="column8 style9 s">香港</td>
+            <td class="column9 style9 s">台湾</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row187">
+            <td class="column0 style7 s">中国公开赛</td>
+            <td class="column1 style8 n">2015</td>
+            <td class="column2 style8 n">5</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">北京</td>
+            <td class="column5 style9 s">北京飞盘</td>
+            <td class="column6 style8 n">17</td>
+            <td class="column7 style7 s">十年</td>
+            <td class="column8 style9 s">香港</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row188">
+            <td class="column0 style7 s">上海青少年赛</td>
+            <td class="column1 style8 n">2015</td>
+            <td class="column2 style8 n">5</td>
+            <td class="column3 style9 s">高中 混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">Jack</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">香港汉基</td>
+            <td class="column8 style9 s">上海南模</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row189">
+            <td class="column0 style3 s">南京公开赛</td>
+            <td class="column1 style4 n">2015</td>
+            <td class="column2 style4 n">4</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">南京</td>
+            <td class="column5 style5 s">南京飞盘</td>
+            <td class="column6 style4 n">14</td>
+            <td class="column7 style3 s">上海Huwa</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row190">
+            <td class="column0 style3 s">宁波公开赛</td>
+            <td class="column1 style4 n">2015</td>
+            <td class="column2 style4 n">4</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">宁波</td>
+            <td class="column5 style5 s">宁波UFO</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">香港Convicts</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row191">
+            <td class="column0 style7 s">SCSC邀请赛</td>
+            <td class="column1 style8 n">2015</td>
+            <td class="column2 style8 n">3</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5">&nbsp;</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">上海Huwa</td>
+            <td class="column8 style9 s">北京大哥</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row192">
+            <td class="column0 style3 s">天津公开赛</td>
+            <td class="column1 style4 n">2015</td>
+            <td class="column2 style4 null"></td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">天津速必得</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">北京大哥</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row193">
+            <td class="column0 style3 s">武汉公开赛</td>
+            <td class="column1 style4 n">2015</td>
+            <td class="column2 style4 null"></td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">武汉</td>
+            <td class="column5 style5 s">地大飞盘</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">长沙湘北</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row194">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2014</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">上海Huwa</td>
+            <td class="column8 style9 s">熊猫</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row195">
+            <td class="column0 style7 s">中国公开赛</td>
+            <td class="column1 style8 n">2014</td>
+            <td class="column2 style8 n">5</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">常州</td>
+            <td class="column5 style9 s">常州飞盘</td>
+            <td class="column6 style8 n">18</td>
+            <td class="column7 style7 s">地大CUG</td>
+            <td class="column8 style9 s">毕业生</td>
+            <td class="column9 style9 s">天体Speed</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row196">
+            <td class="column0 style3 s">南京公开赛</td>
+            <td class="column1 style4 n">2014</td>
+            <td class="column2 style4 n">4</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">南京</td>
+            <td class="column5 style5 s">南京飞盘</td>
+            <td class="column6 style4 n">6</td>
+            <td class="column7 style3 s">西瓜</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row197">
+            <td class="column0 style3 s">宁波公开赛</td>
+            <td class="column1 style4 n">2014</td>
+            <td class="column2 style4 n">4</td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">宁波</td>
+            <td class="column5 style5 s">宁波UFO</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">上海Huwa</td>
+            <td class="column8 style5 s">江南</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row198">
+            <td class="column0 style7 s">SCSC邀请赛</td>
+            <td class="column1 style8 n">2014</td>
+            <td class="column2 style8 n">3</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5">&nbsp;</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">上海Huwa</td>
+            <td class="column8 style9 s">北京大哥</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row199">
+            <td class="column0 style3 s">天津公开赛</td>
+            <td class="column1 style4 n">2014</td>
+            <td class="column2 style4 null"></td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">天津速必得</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">北京大哥</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row200">
+            <td class="column0 style3 s">武汉公开赛</td>
+            <td class="column1 style4 n">2014</td>
+            <td class="column2 style4 null"></td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">武汉</td>
+            <td class="column5 style5 s">地大飞盘</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">地大CUG</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row201">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2013</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">上海Huwa</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row202">
+            <td class="column0 style7 s">中国公开赛</td>
+            <td class="column1 style8 n">2013</td>
+            <td class="column2 style8 null"></td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">深圳</td>
+            <td class="column5 style9 s">深圳飞盘</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">毕业生</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row203">
+            <td class="column0 style3 s">天津公开赛</td>
+            <td class="column1 style4 n">2013</td>
+            <td class="column2 style4 null"></td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">天津速必得</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">天体Speed</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row204">
+            <td class="column0 style3 s">武汉公开赛</td>
+            <td class="column1 style4 n">2013</td>
+            <td class="column2 style4 null"></td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">武汉</td>
+            <td class="column5 style5 s">地大飞盘</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">长沙湘北</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row205">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2012</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">新加坡Shiok</td>
+            <td class="column8 style9 s">北京大哥</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row206">
+            <td class="column0 style7 s">中国公开赛</td>
+            <td class="column1 style8 n">2012</td>
+            <td class="column2 style8 null"></td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">北京</td>
+            <td class="column5">&nbsp;</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">天体Speed</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row207">
+            <td class="column0 style3 s">天津公开赛</td>
+            <td class="column1 style4 n">2012</td>
+            <td class="column2 style4 null"></td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">天津速必得</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">天体Speed</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row208">
+            <td class="column0 style3 s">武汉公开赛</td>
+            <td class="column1 style4 n">2012</td>
+            <td class="column2 style4 null"></td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">武汉</td>
+            <td class="column5 style5 s">地大飞盘</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">上海Huwa</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row209">
+            <td class="column0 style7 s">上海公开赛</td>
+            <td class="column1 style8 n">2011</td>
+            <td class="column2 style8 n">6</td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">上海</td>
+            <td class="column5 style9 s">SUPA</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">北京大哥</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row210">
+            <td class="column0 style7 s">中国公开赛</td>
+            <td class="column1 style8 n">2011</td>
+            <td class="column2 style8 null"></td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">北京</td>
+            <td class="column5">&nbsp;</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">香港</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row211">
+            <td class="column0 style3 s">天津公开赛</td>
+            <td class="column1 style4 n">2011</td>
+            <td class="column2 style4 null"></td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">天津速必得</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">北京大哥</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row212">
+            <td class="column0 style7 s">中国公开赛</td>
+            <td class="column1 style8 n">2010</td>
+            <td class="column2 style8 null"></td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">北京</td>
+            <td class="column5">&nbsp;</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">天体Speed</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row213">
+            <td class="column0 style3 s">天津公开赛</td>
+            <td class="column1 style4 n">2010</td>
+            <td class="column2 style4 null"></td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">天津速必得</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">北京大哥</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row214">
+            <td class="column0 style7 s">中国公开赛</td>
+            <td class="column1 style8 n">2009</td>
+            <td class="column2 style8 null"></td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">北京</td>
+            <td class="column5">&nbsp;</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">香港</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row215">
+            <td class="column0 style3 s">天津公开赛</td>
+            <td class="column1 style4 n">2009</td>
+            <td class="column2 style4 null"></td>
+            <td class="column3 style5 s">混合</td>
+            <td class="column4 style5 s">天津</td>
+            <td class="column5 style5 s">天津速必得</td>
+            <td class="column6 style4 null"></td>
+            <td class="column7 style3 s">上海Huwa</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style6 null"></td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row216">
+            <td class="column0 style7 s">中国公开赛</td>
+            <td class="column1 style8 n">2008</td>
+            <td class="column2 style8 null"></td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">北京</td>
+            <td class="column5">&nbsp;</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">Air Kazakh</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+          <tr class="row217">
+            <td class="column0 style7 s">中国公开赛</td>
+            <td class="column1 style8 n">2007</td>
+            <td class="column2 style8 null"></td>
+            <td class="column3 style9 s">混合</td>
+            <td class="column4 style9 s">天津</td>
+            <td class="column5">&nbsp;</td>
+            <td class="column6 style8 null"></td>
+            <td class="column7 style7 s">Air Kazakh</td>
+            <td class="column8">&nbsp;</td>
+            <td class="column9">&nbsp;</td>
+            <td class="column10 style10 s">是</td>
+            <td class="column11">&nbsp;</td>
+          </tr>
+        </tbody>
+    </table>
+  </body>
+</html>

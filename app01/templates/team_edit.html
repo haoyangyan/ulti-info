@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h4>注意: 任一队伍队员数量上限为32人每年, 一旦通过申请即占用名额，不可撤销</h4>
+<h4>Notice: The limitaion of roster is 32 player every team & year. Once an application is accepted, the spot will be irrevocably taken</h4>
+    <div class="container">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                申请名单
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>申请队伍</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset %}
+                    <tr>
+                        <th>{{ obj.name }}</th>
+                        <th>{{ obj.gender }}</th>
+                        <th>{{ obj.applyname }}</th>
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="/team/{{ obj.id }}/{{ obj.teamapply }}/accept/">通过申请</a>
+                            <a class="btn btn-danger btn-xs" href="/team/{{ obj.id }}/{{ obj.teamapply }}/reject/">拒绝申请</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

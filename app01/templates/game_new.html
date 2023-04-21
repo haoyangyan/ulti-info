@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="panel panel-default">
+      <div class="panel-heading">
+          <h3 class="panel-title"> 新建比赛类型 </h3>
+      </div>
+      <div class="panel-body">
+          <form method="post" novalidate>
+              {% csrf_token %}
+              <select class="form-control" name="sch_type">
+                {% for item in type_choice %}
+                  <option value="{{item.0}}">{{item.1}}</option>
+                {% endfor %}
+              </select>
+              <br/>
+              <div class="form-group" >
+                <label>比赛名称</label>
+                <input type="text" class="form-control" placeholder="冠军淘汰赛" name="sch_name" />
+                <span style="color: red;">{{ field.errors.0 }}</span>
+              </div>
+              <button type="submit" class="btn btn-primary">提 交</button>
+          </form>
+      </div>
+  </div>
+</div>
+
+{% endblock %}

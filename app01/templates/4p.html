@@ -1,0 +1,149 @@
+{% extends 'layout3.html' %}
+ 
+{% block content %}
+<style>
+    .wrapper {
+    padding: 15px 20px;
+  
+    display: flex;
+    align-items: flex-start;
+}
+.left {
+    width: 120px;
+    border: 5px solid #ddd;
+  
+    flex: 0 0 auto;
+}
+.right {
+    margin-left: 20px;
+    border: 5px solid #ddd;
+  
+    flex: 1 1 auto;
+}
+</style>
+
+<div class="container">
+    <div class="panel-heading">
+        <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+        {{queryset.0.sch_name}}
+    </div>
+    <div class="wrapper" id="wrapper">
+        <div class="container" class="left">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Pool A</th>
+                        <th>胜-负</th>
+                        <th>净胜分</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset3 %}
+                {% if obj.pool_id == 1 %}
+                    <tr>
+                        <td><a href="/team/{{obj.homeid}}/roster">{{obj.team}}</a></td>
+                        <td>{{obj.result}}</td>
+                        <td>{{obj.score_d}}</td>
+                    </tr>
+                {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="container" class="right">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Pool B</th>
+                        <th>胜-负</th>
+                        <th>净胜分</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset3 %}
+                {% if obj.pool_id == 2 %}
+                    <tr>
+                        <td><a href="/team/{{obj.homeid}}/roster">{{obj.team}}</a></td>
+                        <td>{{obj.result}}</td>
+                        <td>{{obj.score_d}}</td>
+                    </tr>
+                {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="wrapper" id="wrapper">
+        <div class="container" class="left">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Pool C</th>
+                        <th>胜-负</th>
+                        <th>净胜分</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset3 %}
+                {% if obj.pool_id == 3 %}
+                    <tr>
+                        <td><a href="/team/{{obj.homeid}}/roster">{{obj.team}}</a></td>
+                        <td>{{obj.result}}</td>
+                        <td>{{obj.score_d}}</td>
+                    </tr>
+                {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="container" class="right">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Pool D</th>
+                        <th>胜-负</th>
+                        <th>净胜分</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset3 %}
+                {% if obj.pool_id == 4 %}
+                    <tr>
+                        <td><a href="/team/{{obj.homeid}}/roster">{{obj.team}}</a></td>
+                        <td>{{obj.result}}</td>
+                        <td>{{obj.score_d}}</td>
+                    </tr>
+                {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <table class="table table-bordered" >
+        <thead>
+            <tr>
+                <th>比赛编号</th>
+                <th>时间&场地</th>
+                <th>主队</th>
+                <th>主分</th>
+                <th>客分</th>
+                <th>客队</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for obj in queryset %}
+            <tr>
+                <td>{{ obj.game_name}}</td>
+                <td>{{ obj.game_info}}</td>
+                <td><a href="/team/{{obj.homeid}}/roster">{{ obj.home}}</a></td>
+                <td>{{ obj.home_s}}</td>
+                <td>{{ obj.away_s}}</td>
+                <td><a href="/team/{{obj.awayid}}/roster">{{ obj.away}}</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

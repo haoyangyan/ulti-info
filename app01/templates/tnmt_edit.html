@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                赛事列表
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>赛事/Tournament</th>
+                    <th>组别/Division</th>
+                    <th>主办姓名/Host name</th>
+                    <th>主办方/Host</th>
+                    <th>省/Province</th>
+                    <th>城市/City</th>
+                    <th>日期/Date</th>
+                    <th>外链/Link</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset %}
+                    <tr>
+                        <td>{{ obj.tnmtname}}</td>
+                        <td>{{ obj.divi}}</td>
+                        <td>{{ obj.host_name}}</td>
+                        <td>{{ obj.host }}</td>
+                        <td>{{ obj.prov }}</td>
+                        <td>{{ obj.city }}</td>
+                        <td>{{ obj.s_date }}</td>
+                        <td>{{ obj.o_link}}</td>
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="/info/{{ obj.id }}/accept/">通过</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

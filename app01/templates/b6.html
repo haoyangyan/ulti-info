@@ -1,0 +1,62 @@
+{% extends 'layout3.html' %}
+ 
+{% block content %}
+<div class="container">
+    <div class="panel-heading">
+        <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+        {{queryset.0.sch_name}}
+    </div>
+
+<div class="tree">
+    <ul>
+        <li>
+            <a href="#">
+            <table border="1">
+                <tr><th rowspan="3">{{queryset.4.game_name}}</th><th>{{queryset.4.game_info}}</th><th>比分</th></tr>
+                <tr><td><a href="/team/{{queryset.4.homeid}}/roster">{{queryset.4.home}}</a></td><td>{{queryset.4.home_s}}</td></tr>
+                <tr><td><a href="/team/{{queryset.4.awayid}}/roster">{{queryset.4.away}}</a></td><td>{{queryset.4.away_s}}</td></tr>
+            </table></a>
+            <ul>
+                <li>
+                    <a href="#">
+                    <table border="1">
+                        <tr><th rowspan="3">{{queryset.2.game_name}}</th><th>{{queryset.2.game_info}}</th><th>比分</th></tr>
+                        <tr><td><a href="/team/{{queryset.2.homeid}}/roster">{{queryset.2.home}}</a></td><td>{{queryset.2.home_s}}</td></tr>
+                        <tr><td><a href="/team/{{queryset.2.awayid}}/roster">{{queryset.2.away}}</a></td><td>{{queryset.2.away_s}}</td></tr>
+                    </table></a>
+                    <ul>
+                        <li>
+                            <a href="#">
+                            <table border="1">
+                                <tr><th rowspan="3">{{queryset.0.game_name}}</th><th>{{queryset.0.game_info}}</th><th>比分</th></tr>
+                                <tr><td><a href="/team/{{queryset.0.homeid}}/roster">{{queryset.0.home}}</a></td><td>{{queryset.0.home_s}}</td></tr>
+                                <tr><td><a href="/team/{{queryset.0.awayid}}/roster">{{queryset.0.away}}</a></td><td>{{queryset.0.away_s}}</td></tr>
+                            </table></a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                    <table border="1">
+                        <tr><th rowspan="3">{{queryset.3.game_name}}</th><th>{{queryset.3.game_info}}</th><th>比分</th></tr>
+                        <tr><td><a href="/team/{{queryset.3.homeid}}/roster">{{queryset.3.home}}</a></td><td>{{queryset.3.home_s}}</td></tr>
+                        <tr><td><a href="/team/{{queryset.3.awayid}}/roster">{{queryset.3.away}}</a></td><td>{{queryset.3.away_s}}</td></tr>
+                    </table></a>   
+                    <ul>
+                        <li>
+                            <a href="#">
+                            <table border="1">
+                                <tr><th rowspan="3">{{queryset.1.game_name}}</th><th>{{queryset.1.game_info}}</th><th>比分</th></tr>
+                                <tr><td><a href="/team/{{queryset.1.homeid}}/roster">{{queryset.1.home}}</a></td><td>{{queryset.1.home_s}}</td></tr>
+                                <tr><td><a href="/team/{{queryset.1.awayid}}/roster">{{queryset.1.away}}</a></td><td>{{queryset.1.away_s}}</td></tr>
+                            </table></a>
+                        </li>
+                    </ul>          
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+</div>
+{% endblock %}

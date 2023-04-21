@@ -1,0 +1,99 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<style>
+    .wrapper {
+    padding: 15px 20px;
+  
+    display: flex;
+    align-items: flex-start;
+}
+.left {
+    width: 120px;
+    border: 5px solid #ddd;
+  
+    flex: 0 0 auto;
+}
+.right {
+    margin-left: 20px;
+    border: 5px solid #ddd;
+  
+    flex: 1 1 auto;
+}
+</style>
+
+<div class="wrapper" id="wrapper">
+<div class="container" class="left">
+    <div class="panel panel-default">
+        <h4>
+            {{teamname1}} 简介
+        </h4>
+        <h5>
+            {{intro1}}
+        </h5>
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            {{teamname1}}   队伍名单
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>姓名</th>
+                <th>性别</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in queryset %}
+                <tr>
+                    <td>{{ obj.name}}</td>
+                    <td>{{ obj.gender.0}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="container" class="right">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            {{teamname1}}   比赛历史
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>赛事</th>
+                <th>日期</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in queryset2 %}
+                <tr>
+                    <td>{{ obj.tnmt_name}}</td>
+                    <td>{{ obj.date}}</td>
+                    <td>{{ obj.home}}</td>
+                    <td>{{ obj.home_s}}</td>
+                    <td>{{ obj.away_s}}</td>
+                    <td>{{ obj.away}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+</div>
+
+<div align="center">
+<a class="btn btn-danger btn-xs" href="/team/{{teamid1}}/join/">申请加入</a>
+</div>
+{% endblock %}

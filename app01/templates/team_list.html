@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <div style="margin-bottom: 10px">
+            <a class="btn btn-success" href="/team/add/">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                新建队伍
+            </a>
+            <a class="btn btn-success" href="/team/edit/">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                队伍管理
+            </a>
+        </div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                队伍列表
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>队伍/Team</th>
+                    <th>组别/Division</th>
+                    <th>省/Province</th>
+                    <th>城市/City</th>
+                    <th>链接/Link</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset %}
+                    <tr>
+                        <td>{{ obj.teamname}}</td>
+                        <td>{{ obj.divi.0}}{{ obj.divi.1}}</td>
+                        <td>{{ obj.prov }}</td>
+                        <td>{{ obj.city }}</td>
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="/team/{{ obj.id }}/roster/">链接</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

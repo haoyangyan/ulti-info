@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+ 
+{% block content %}
+<form method="post" novalidate>
+    {% csrf_token %}
+{% for field in linki %}
+    <td>{{field}}</td>
+    <span style="color: red;">{{ field.errors.0 }}</span>
+{% endfor %}
+<button type="submit" class="btn btn-primary" name="0">提 交</button>
+</form>
+{% endblock %}

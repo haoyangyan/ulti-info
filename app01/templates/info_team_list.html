@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+<!DOCTYPE html>
+{% block content %}
+
+<h1>INFO列表</h1>
+
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>队名</th>
+        <th>组别</th>
+        <th>队长</th>
+        <th>省</th>
+        <th>市</th>
+        <th>简介</th>
+        <th>操作</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for obj in data_list %}
+        <tr>
+            <td>{{ obj.id }}</td>
+            <td>{{ obj.teamname }}</td>
+            <td>{{ obj.divi }}</td>
+            <td>{{ obj.captain }}</td>
+            <td>{{ obj.prov }}</td>
+            <td>{{ obj.city }}</td>
+            <td>{{ obj.intro }}</td>
+            <td>
+                <a href="/team/info/delete/?nid={{ obj.id }}">删除</a>
+            </td>
+            <td>
+                <a href="/team/info/edit/?nid={{ obj.id }}">编辑</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}
+

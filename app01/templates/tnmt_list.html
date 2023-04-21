@@ -1,0 +1,99 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <div style="margin-bottom: 10px">
+            <a class="btn btn-success" href="/tnmt/add/">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                发布赛事
+            </a>
+            <a class="btn btn-success" href="/tnmt/list/edit">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                赛事管理
+            </a>
+        </div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                赛事列表
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>赛事/Tournament</th>
+                    <th>组别/Division</th>
+                    <th>主办方/Host</th>
+                    <th>省/Province</th>
+                    <th>城市/City</th>
+                    <th>日期/Date</th>
+                    <th>赛程/Schedule</th>
+                    <th>外链/Link</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset %}
+                    <tr>
+                        <td>{{ obj.tnmtname}}</td>
+                        <td>{{ obj.divi.0}}{{ obj.divi.1}}</td>
+                        <td>{{ obj.host }}</td>
+                        <td>{{ obj.prov }}</td>
+                        <td>{{ obj.city }}</td>
+                        <td>{{ obj.s_date.month}}/{{ obj.s_date.day }} - {{ obj.e_date.month}}/{{ obj.e_date.day }}</td>
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="/tnmt/{{obj.id}}/show/">赛程</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="{{obj.o_link}}">外链</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                历史赛事
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>赛事/Tournament</th>
+                    <th>组别/Division</th>
+                    <th>主办方/Host</th>
+                    <th>省/Province</th>
+                    <th>城市/City</th>
+                    <th>日期/Date</th>
+                    <th>赛果/Result</th>
+                    <th>外链/Link</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset2 %}
+                    <tr>
+                        <td>{{ obj.tnmtname}}</td>
+                        <td>{{ obj.divi.0}}{{ obj.divi.1}}</td>
+                        <td>{{ obj.host }}</td>
+                        <td>{{ obj.prov }}</td>
+                        <td>{{ obj.city }}</td>
+                        <td>{{ obj.s_date.month}}/{{ obj.s_date.day }} - {{ obj.e_date.month}}/{{ obj.e_date.day }}</td>
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="/tnmt/{{obj.id}}/show/">赛果</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="{{obj.o_link}}">外链</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

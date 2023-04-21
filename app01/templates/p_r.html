@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>中国极限飞盘信息平台</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.min.css' %}">
+    <style>
+        .navbar {
+            border-radius: 0;
+        }
+    </style>
+    <style>
+    * {margin: 0; padding: 0;}
+
+    .tree ul { padding-top: 20px; position: relative; transition: all 0.5s; -webkit-transition: all 0.5s; -moz-transition: all 0.5s; }
+
+    .tree li { float: left; text-align: center; list-style-type: none; position: relative; padding: 20px 3px 0 3px; transition: all 0.5s; -webkit-transition: all 0.5s; -moz-transition: all 0.5s; }
+
+    /*We will use ::before and ::after to draw the connectors*/
+
+    .tree li::before, .tree li::after{ content: ''; position: absolute; top: 0; right: 50%; border-top: 1px solid #ccc; width: 50%; height: 20px; }
+    .tree li::after{ right: auto; left: 50%; border-left: 1px solid #ccc; }
+
+    /*We need to remove left-right connectors from elements without any siblings*/
+    .tree li:only-child::after, .tree li:only-child::before { display: none; }
+
+    /*Remove space from the top of single children*/
+    .tree li:only-child{ padding-top: 0;}
+
+    /*Remove left connector from first child and right connector from last child*/
+    .tree li:first-child::before, .tree li:last-child::after{ border: 0 none; }
+    /*Adding back the vertical connector to the last nodes*/
+    .tree li:last-child::before{ border-right: 1px solid #ccc; border-radius: 0 3px 0 0; -webkit-border-radius: 0 3px 0 0; -moz-border-radius: 0 3px 0 0; }
+    .tree li:first-child::after{ border-radius: 3px 0 0 0; -webkit-border-radius: 3px 0 0 0; -moz-border-radius: 3px 0 0 0; }
+
+    /*Time to add downward connectors from parents*/
+    .tree ul ul::before{ content: ''; position: absolute; top: 0; left: 50%; border-left: 1px solid #ccc; width: 0; height: 20px; }
+
+    .tree li a{ border: 1px solid #ccc; padding: 3px 10px; text-decoration: none; color: #666; font-family: arial, verdana, tahoma; font-size: 11px; display: inline-block; border-radius: 3px; -webkit-border-radius: 3px; -moz-border-radius: 3px; transition: all 0.5s; -webkit-transition: all 0.5s; -moz-transition: all 0.5s; }
+
+    /*Time for some hover effects*/
+    /*We will apply the hover effect the the lineage of the element also*/
+    .tree li a:hover, .tree li a:hover+ul li a { background: #c8e4f8; color: #000; border: 1px solid #94a0b4; }
+    /*Connector styles on hover*/
+    .tree li a:hover+ul li::after,
+    .tree li a:hover+ul li::before,
+    .tree li a:hover+ul::before,
+    .tree li a:hover+ul ul::before{ border-color: #94a0b4; }
+</style>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"> 中国极限飞盘信息平台 </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="/tnmt/list/">赛事列表</a></li>
+                <li><a href="/team/list/">队伍列表</a></li>
+                <li><a href="http://www.pandonut.com/map">飞盘地图</a></li>
+                <li><a href="/page/hist/">历史数据库</a></li>
+                <li><a href="/page/p_r/">Power Ranking</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/user/add/">注册</a></li>
+                <li><a href="/login/">登录</a></li>
+                
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">{{ request.session.info.name }} <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/logout/">退出登录</a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"> 实力榜 </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#">当前排名</a></li>
+                        <li><a href="https://haoyangyan.shinyapps.io/power_ranking/?_ga=2.21634232.2019471169.1675786728-1720121175.1665874611">Power Ranking 2022</a></li>
+                    </ul>
+                </div>
+
+
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div>
+    {% block content %}{% endblock %}
+</div>
+
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
+</body>
+</html>

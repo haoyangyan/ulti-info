@@ -1,0 +1,118 @@
+{% extends 'layout4.html' %}
+ 
+{% block content %}
+<div class="container">
+    <div class="panel-heading">
+        <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+        {{queryset.0.sch_name}}
+    </div>
+
+<div class="tree">
+    <ul>
+        <li>
+            <form method="post" novalidate>
+                {% csrf_token %}
+            <a href="#">
+            <table border="1">
+                <tr><th rowspan="3">{{form_l.6.game_name}}</th><th>{{form_l.6.game_info}}</th><th>比分</th></tr>
+                <tr><td>{{form_l.6.home}}</td><td>{{form_l.6.home_s}}</td></tr>
+                <tr><td>{{form_l.6.away}}</td><td>{{form_l.6.away_s}}</td></tr>
+            </table></a>
+            <div><button type="submit" class="btn btn-primary" name="6">提 交</button></div>
+            <span style="color: red;">{{ form_l.6.errors.0 }}</span>
+            </form>
+            <ul>
+                <li>
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                    <a href="#">
+                    <table border="1">
+                        <tr><th rowspan="3">{{form_l.4.game_name}}</th><th>{{form_l.4.game_info}}</th><th>比分</th></tr>
+                        <tr><td>{{form_l.4.home}}</td><td>{{form_l.4.home_s}}</td></tr>
+                        <tr><td>{{form_l.4.away}}</td><td>{{form_l.4.away_s}}</td></tr>
+                    </table></a>
+                    <div><button type="submit" class="btn btn-primary" name="4">提 交</button></div>
+                    <span style="color: red;">{{ form_l.4.errors.0 }}</span>
+                    </form>
+                    <ul>
+                        <li>
+                            <form method="post" novalidate>
+                                {% csrf_token %}
+                            <a href="#">
+                            <table border="1">
+                                <tr><th rowspan="3">{{form_l.0.game_name}}</th><th>{{form_l.0.game_info}}</th><th>比分</th></tr>
+                                <tr><td>{{form_l.0.home}}</td><td>{{form_l.0.home_s}}</td></tr>
+                                <tr><td>{{form_l.0.away}}</td><td>{{form_l.0.away_s}}</td></tr>
+                            </table></a>
+                            <div><button type="submit" class="btn btn-primary" name="0">提 交</button></div>
+                            <span style="color: red;">{{ form_l.0.errors.0 }}</span>
+                            </form>
+                        </li>
+                        <li>
+                            <form method="post" novalidate>
+                                {% csrf_token %}
+                            <a href="#">
+                            <table border="1">
+                                <tr><th rowspan="3">{{form_l.1.game_name}}</th><th>{{form_l.1.game_info}}</th><th>比分</th></tr>
+                                <tr><td>{{form_l.1.home}}</td><td>{{form_l.1.home_s}}</td></tr>
+                                <tr><td>{{form_l.1.away}}</td><td>{{form_l.1.away_s}}</td></tr>
+                            </table></a>
+                            <div><button type="submit" class="btn btn-primary" name="1">提 交</button></div>
+                            <span style="color: red;">{{ form_l.1.errors.0 }}</span>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                    <a href="#">
+                    <table border="1">
+                        <tr><th rowspan="3">{{form_l.5.game_name}}</th><th>{{form_l.5.game_info}}</th><th>比分</th></tr>
+                        <tr><td>{{form_l.5.home}}</td><td>{{form_l.5.home_s}}</td></tr>
+                        <tr><td>{{form_l.5.away}}</td><td>{{form_l.5.away_s}}</td></tr>
+                    </table></a>              
+                    <div><button type="submit" class="btn btn-primary" name="5">提 交</button></div>
+                    <span style="color: red;">{{ form_l.5.errors.0 }}</span>
+                    </form>
+                    <ul>
+                        <li>
+                            <form method="post" novalidate>
+                                {% csrf_token %}
+                            <a href="#">
+                            <table border="1">
+                                <tr><th rowspan="3">{{form_l.2.game_name}}</th><th>{{form_l.2.game_info}}</th><th>比分</th></tr>
+                                <tr><td>{{form_l.2.home}}</td><td>{{form_l.2.home_s}}</td></tr>
+                                <tr><td>{{form_l.2.away}}</td><td>{{form_l.2.away_s}}</td></tr>
+                            </table></a>
+                            <div><button type="submit" class="btn btn-primary" name="2">提 交</button></div>
+                            <span style="color: red;">{{ form_l.2.errors.0 }}</span>
+                            </form>
+                        </li>
+                        <li>
+                            <form method="post" novalidate>
+                                {% csrf_token %}
+                            <a href="#">
+                            <table border="1">
+                                <tr><th rowspan="3">{{form_l.3.game_name}}</th><th>{{form_l.3.game_info}}</th><th>比分</th></tr>
+                                <tr><td>{{form_l.3.home}}</td><td>{{form_l.3.home_s}}</td></tr>
+                                <tr><td>{{form_l.3.away}}</td><td>{{form_l.3.away_s}}</td></tr>
+                            </table></a>
+                            <div><button type="submit" class="btn btn-primary" name="3">提 交</button></div>
+                            <span style="color: red;">{{ form_l.3.errors.0 }}</span>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>   
+
+
+</div>
+<br>
+<div>
+    <li><a href="/game/{{nid}}/{{mid}}/delete/">删除页面</a></li>
+</div>
+{% endblock %}
